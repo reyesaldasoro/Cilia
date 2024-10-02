@@ -48,8 +48,8 @@ for k=2:numFrames-1
     centroids_2(k,:) = median([centroids_2(k-1:k+1,:)]);
 end
 %%
-
-for k=36%:numFrames
+clear F;
+for k=2:numFrames
     currImage = imread(strcat(strcat(baseDirectory,filesep,dir0(k).name)));
 
     % remove clock and other elements
@@ -61,14 +61,64 @@ for k=36%:numFrames
     cilia_2                         = bwmorph(cilia_1,'majority');
     [cilia_3,numObj(k)]                = bwlabel(cilia_2);
 
-    imagesc(cilia_3);colorbar
+    imagesc(currImage);%colorbar
     hold on
-    plot(centroids_1(k,1),centroids_1(k,2),'ro')
-    plot(centroids_2(k,1),centroids_2(k,2),'md')
-    ellipsoid(centroids_1(k,1),centroids_1(k,2), 0,centroids_1(k,5)/2,centroids_1(k,4)/2,0.1)
-    ellipsoid(centroids_2(k,1),centroids_2(k,2), 0,centroids_2(k,5)/2,centroids_2(k,4)/2,0.1)
+    %plot(centroids_1(k,1),centroids_1(k,2),'ro')
+    %plot(centroids_2(k,1),centroids_2(k,2),'md')
+    [X1,Y1,Z1] = ellipsoid(centroids_1(k,1),centroids_1(k,2), 1,centroids_1(k,5)/2,centroids_1(k,4)/2,0.1);
+    [X2,Y2,Z2] = ellipsoid(centroids_2(k,1),centroids_2(k,2), 1,centroids_2(k,5)/2,centroids_2(k,4)/2,0.1);
+    e1 = surf(X1,Y1,Z1);
+    e2 = surf(X2,Y2,Z2);
+    e1.EdgeColor='m';
+    e1.EdgeAlpha=0.25;
+    e2.EdgeAlpha=0.25;
+    e2.EdgeColor='g';
+    e1.FaceColor='none';
+    e2.FaceColor='none';
+    view(50,70)
+   axis([350 650 50 350])
     drawnow
+    pause(0.1)
+    F(k-1) = getframe(gcf);
     hold off
 end
 
 
+%%
+k2=k;
+for k=50:2:87
+
+     view(k,70)
+    drawnow
+    pause(0.1)
+    F(k2) = getframe(gcf);
+    k2=k2+1;
+end 
+%%
+for k=[70:2:90 90:-2:70 ]%30 30:2:90 90:-2:60]
+    view(87,k)
+    drawnow
+    pause(0.1)
+    F(k2) = getframe(gcf);
+        k2=k2+1;
+end 
+
+%%
+
+
+
+   v = VideoWriter('cilia_1', 'MPEG-4');
+            open(v);
+            writeVideo(v,F);
+            close(v);
+
+%% save the movie as a GIF
+    [imGif,mapGif] = rgb2ind(F(1).cdata,256,'nodither');
+    numFrames = size(F,2);
+
+    imGif(1,1,1,numFrames) = 0;
+    for k = 2:numFrames 
+      imGif(:,:,1,k) = rgb2ind(F(k).cdata,mapGif,'nodither');
+    end
+
+        imwrite(imGif,mapGif,'cilia_2.gif', 'DelayTime',0,'LoopCount',inf); %g443800
