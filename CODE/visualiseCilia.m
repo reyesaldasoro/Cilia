@@ -28,7 +28,7 @@ for k=1:numFrames
     cilia_1                         = cilia_0>thresR;
     cilia_2                         = bwmorph(cilia_1,'majority');
     [cilia_3,numObj(k)]                = bwlabel(cilia_2);
-    cilia_3P{k}                        = regionprops(cilia_3,'Area','Centroid','BoundingBox','MajorAxisLength','Orientation');
+    cilia_3P{k}                        = regionprops(cilia_3,'Area','Centroid','BoundingBox','MajorAxisLength','MinorAxisLength','Orientation');
     %imagesc(cilia_3);colorbar
     %drawnow
 end
@@ -37,9 +37,9 @@ end
 centroids_2=[];
 centroids_1=[];
 for k=1:numFrames
-    centroids_1(k,:) = [cilia_3P{k}(1).Centroid cilia_3P{k}(1).Orientation cilia_3P{k}(1).MajorAxisLength] ;
+    centroids_1(k,:) = [cilia_3P{k}(1).Centroid cilia_3P{k}(1).Orientation cilia_3P{k}(1).MajorAxisLength cilia_3P{k}(1).MinorAxisLength] ;
     if numObj(k)>1
-        centroids_2(k,:) = [cilia_3P{k}(2).Centroid  cilia_3P{k}(1).Orientation cilia_3P{k}(1).MajorAxisLength];
+        centroids_2(k,:) = [cilia_3P{k}(2).Centroid  cilia_3P{k}(1).Orientation cilia_3P{k}(2).MajorAxisLength  cilia_3P{k}(2).MinorAxisLength];
     end
 end
 %%
@@ -49,7 +49,7 @@ for k=2:numFrames-1
 end
 %%
 
-for k=8%:numFrames
+for k=36%:numFrames
     currImage = imread(strcat(strcat(baseDirectory,filesep,dir0(k).name)));
 
     % remove clock and other elements
@@ -60,11 +60,13 @@ for k=8%:numFrames
     cilia_1                         = cilia_0>thresR;
     cilia_2                         = bwmorph(cilia_1,'majority');
     [cilia_3,numObj(k)]                = bwlabel(cilia_2);
-    hold on
-    imagesc(cilia_3);colorbar
 
+    imagesc(cilia_3);colorbar
+    hold on
     plot(centroids_1(k,1),centroids_1(k,2),'ro')
     plot(centroids_2(k,1),centroids_2(k,2),'md')
+    ellipsoid(centroids_1(k,1),centroids_1(k,2), 0,centroids_1(k,5)/2,centroids_1(k,4)/2,0.1)
+    ellipsoid(centroids_2(k,1),centroids_2(k,2), 0,centroids_2(k,5)/2,centroids_2(k,4)/2,0.1)
     drawnow
     hold off
 end
