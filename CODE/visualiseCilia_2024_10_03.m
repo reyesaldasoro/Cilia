@@ -67,7 +67,7 @@ for k=2:numFrames
     imagesc(currImage);%colorbar
     hold on
     text(centroids_1(k,1),centroids_1(k,2)+25,2,num2str(centroids_1(k,4),3),'fontsize',22,'color','m')
-    text(centroids_2(k,1),centroids_1(k,2)-25,2.3,num2str(centroids_2(k,4),3),'fontsize',22,'color','b')
+    text(centroids_2(k,1),centroids_2(k,2)+10,2.3,num2str(centroids_2(k,4),3),'fontsize',22,'color','b')
     %plot(centroids_2(k,1),centroids_2(k,2),'md')
     [X1,Y1,Z1] = ellipsoid(centroids_1(k,1),centroids_1(k,2), 1,centroids_1(k,5)/2,centroids_1(k,4)/2,0.1);
     [X2,Y2,Z2] = ellipsoid(centroids_2(k,1),centroids_2(k,2), 1,centroids_2(k,5)/2,centroids_2(k,4)/2,0.1);
