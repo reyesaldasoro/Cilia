@@ -31,7 +31,7 @@ imagesc(1*currImage(rr1,cc1,:)+0.5*currImage(rr2,cc2,:)+0.5*currImage(rr3,cc3,:)
 %%
 filtG           = fspecial("gaussian",9,6);
 clear F;
-for k=122 :numFrames
+for k=202 % :numFrames
     
     currImage = imread(strcat(strcat(baseDirectory,filesep,dir0(k).name)));
 
@@ -63,13 +63,39 @@ for k=122 :numFrames
     qq = mesh(-0.1+ double(cilia_1));
     qq.EdgeAlpha=0.1;qq.EdgeColor='c';qq.FaceColor='none';
     qq2 = mesh(-0.1+ 0.5*double(cells_3));
-    qq2.EdgeAlpha=0.1;qq2.EdgeColor='y';qq2.FaceColor='none';
+    qq2.EdgeAlpha=0.1;qq2.EdgeColor='g';qq2.FaceColor='none';
     view(-40,60)
     axis ([0 340 0 280 0 1])
     drawnow    
     pause(0.1)
     F(k-121) = getframe(gcf);
 end
+%% For one frame rotate around to show how it matches the still frame
+% pan around elevation and azimuth
+clear F;
+k4=1;
+for k1=90:-3:50
+    view(0,k1)
+    drawnow    
+    pause(0.1)
+    F(k4) = getframe(gcf);
+    k4=k4+1;
+end
+for k2=[0:5:60 60:-5:-60 -60:5:0]
+    view(k2,k1)
+    drawnow    
+    pause(0.1)
+    F(k4) = getframe(gcf);
+    k4=k4+1;
+end
+for k1=50:3:90
+    view(0,k1)
+    drawnow    
+    pause(0.1)
+    F(k4) = getframe(gcf);
+    k4=k4+1;
+end
+
 
 %% interpolate to discard cases where the decapitated rejoins
 
@@ -77,7 +103,7 @@ end
 
 
 
-   v = VideoWriter('cilia_mmc8_1', 'MPEG-4');
+   v = VideoWriter('cilia_mmc8_2', 'MPEG-4');
             open(v);
             writeVideo(v,F);
             close(v);
@@ -91,4 +117,4 @@ end
       imGif(:,:,1,k) = rgb2ind(F(k).cdata,mapGif,'nodither');
     end
 
-        imwrite(imGif,mapGif,'cilia_mmc8_1.gif', 'DelayTime',0,'LoopCount',inf); %g443800
+        imwrite(imGif,mapGif,'cilia_mmc8_2.gif', 'DelayTime',0,'LoopCount',inf); %g443800
