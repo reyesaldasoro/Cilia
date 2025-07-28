@@ -51,7 +51,7 @@ for k=87%:numFiles
 end
 
 %%
-imagesc(a(:,:,1,6));colorbar
+imagesc(CiliaVolume(:,:,2,4));colorbar
 
 %%
 for k=91%:numFiles
