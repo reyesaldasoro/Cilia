@@ -29,7 +29,44 @@ h1.XTickLabel           = shortName;
 h1.XTickLabelRotation   = 90;
 h1.Position             = [  0.0674    0.27    0.9112    0.60];
 h0.Position             = [  643.4000   97.8000  812.0000  333.6000];
+%% Read all cells and extract ratios
+jet2 = [0 0 0;jet];
+
+for k=1:numFiles
+    disp(k)
+    shortName{k}            = dir0(k).name(26:34);
+    currFile                = strcat(baseDir,filesep,dir0(k).name);
+    CiliaVolume             = readCilia(currFile);
+    Output                  = segmentCilia(CiliaVolume);
+    Ratio(k)                = Output.TotalCilia/Output.TotalNuclei;
+    figure
+    finalOutput(:,:,k)      = ((Output.FinalCilia_MIP==0).*Output.FinalNuclei_MIP)+(20+Output.FinalCilia_MIP);
+    imagesc(finalOutput(:,:,k))
+    title(strcat(shortName{k},',  ratio =',num2str(Ratio(k))),'interpreter','none')
+
+end
+
 %%
+
+h0=figure;
+h1=gca;
+hold off
+plot(1:numFiles,Ratio,'r-o')
+grid on
+
+title('Maximum Intensities per Channel')
+h1.TickLabelInterpreter = 'none';
+h1.XTick                = 1:numFiles;
+h1.XTickLabel           = shortName;
+h1.XTickLabelRotation   = 90;
+h1.Position             = [  0.0674    0.27    0.9112    0.60];
+h0.Position             = [  643.4000   97.8000  812.0000  333.6000];
+
+
+
+
+%%
+
 figure
 for k=87%:numFiles
 
