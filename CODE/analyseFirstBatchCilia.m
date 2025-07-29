@@ -33,6 +33,7 @@ h0.Position             = [  643.4000   97.8000  812.0000  333.6000];
 jet2 = [0 0 0;jet];
 
 for k=1:numFiles
+    tic
     disp(k)
     shortName{k}            = dir0(k).name(26:34);
     currFile                = strcat(baseDir,filesep,dir0(k).name);
@@ -43,7 +44,7 @@ for k=1:numFiles
     finalOutput(:,:,k)      = ((Output.FinalCilia_MIP==0).*Output.FinalNuclei_MIP)+(20+Output.FinalCilia_MIP);
     imagesc(finalOutput(:,:,k))
     title(strcat(shortName{k},',  ratio =',num2str(Ratio(k))),'interpreter','none')
-
+    t2=toc;
 end
 
 %%
@@ -168,3 +169,30 @@ camlight left
 axis ij
 axis tight
 rotate3d on
+
+
+
+% ctRange = -5:1:6;
+% 
+% numResults = numel(ctRange);
+% numRows = round(sqrt(numResults));
+% 
+% %%
+% figure
+% tiledlayout(numRows,ceil(numResults/numRows),TileSpacing="none",Padding="tight")
+% 
+% averageCellDiameter = 100;
+% for ind = 1:numResults
+%     disp(ind)
+%     labels = segmentCells2D(cp,max(DAPI,[],3), ...
+%         ImageCellDiameter=averageCellDiameter, ...
+%         CellThreshold=ctRange(ind), ...
+%         FlowErrorThreshold=10);        
+% 
+%     loverlay = labeloverlay(DAPI(:,:,k)/16,labels);
+% 
+%     nexttile
+%     imshow(labels)    
+%     title("Cell Threshold: " + num2str(ctRange(ind)))
+% end
+% linkaxes(findobj(gcf,Type="axes"))
