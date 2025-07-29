@@ -1,4 +1,4 @@
-function CiliaSegmented = segmentCilia(CiliaVolume)
+function Output = segmentCilia(CiliaVolume)
 
 %% Separate the channels and calculate dimensiones
 DAPI                    = squeeze(CiliaVolume(:,:,3,:));
@@ -12,7 +12,7 @@ if ~exist('cp','var')
     cp                  = cellpose(Model="nuclei");
 end
 NucleiSegmented_MIP     =  segmentCells2D(cp,max(DAPI,[],3),ImageCellDiameter=60);
-NucleiSegmented_MIP_P   = regionprops(NucleiSegmented_MIP,'Area','Centroid','BoundingBox','MajorAxisLength','Circularity','Orientation','Eccentricity','MinorAxisLength','Orientation');
+%NucleiSegmented_MIP_P   = regionprops(NucleiSegmented_MIP,'Area','Centroid','BoundingBox','MajorAxisLength','Circularity','Orientation','Eccentricity','MinorAxisLength','Orientation');
 
 % (b) Intensity threshold for the volume
 for k=1:numSlices
@@ -28,7 +28,7 @@ for k=1:numSlices
     NucleiSegmented(:,:,k) = imopen(NucleiSegmented(:,:,k),ones(5));
 end
 
-NucleiSegmented_P           =regionprops(NucleiSegmented,'Area','Centroid','BoundingBox','MajorAxisLength','Circularity');
+%NucleiSegmented_P           =regionprops(NucleiSegmented,'Area','Centroid','BoundingBox','MajorAxisLength','Circularity');
 % cellpose for all levels gives some very strange segmentations
  % for k=1:numSlices
  %     disp(k)
@@ -41,22 +41,43 @@ NucleiSegmented_P           =regionprops(NucleiSegmented,'Area','Centroid','Boun
 [q3,q4]                 = bwlabeln(Green>300);
 q5                      = ismember(q3,unique(q3(q1>0)));
 [CiliaSegmented,q6]     = bwlabeln(ismember(q3,unique(q3(q1>0))));
-CiliaSegmented_P        = regionprops(CiliaSegmented,squeeze(Green),'area',"MeanIntensity","MaxIntensity","MinIntensity");
-CiliaSegmented_MIP_P    = regionprops(max(CiliaSegmented,[],3),'Area','Centroid','BoundingBox','MajorAxisLength','Circularity','Orientation','Eccentricity','MinorAxisLength','Orientation');
+%CiliaSegmented_P        = regionprops(CiliaSegmented,squeeze(Green),'area',"MeanIntensity","MaxIntensity","MinIntensity");
+CiliaSegmented_MIP      = max(CiliaSegmented,[],3);
+%CiliaSegmented_MIP_P    = regionprops(CiliaSegmented_MIP,'Area','Centroid','BoundingBox','MajorAxisLength','Circularity','Orientation','Eccentricity','MinorAxisLength','Orientation');
 
 %% Discard cells that touch boundary
 AllCells                = unique(NucleiSegmented);
 TouchingCells           = union(unique(NucleiSegmented_MIP([1:3 end-3:end],:)),unique(NucleiSegmented_MIP(:,[1:3 end-3:end])));
-NucleiSegmented_NotBorder=ismember(NucleiSegmented_MIP,setdiff(AllCells,TouchingCells));
+NucleiSegmented_NotBorder= ismember(NucleiSegmented_MIP,setdiff(AllCells,TouchingCells));
+NucleiSegmented_Border  = ismember(NucleiSegmented_MIP,(TouchingCells(2:end)));
 
-%%
-% Discard cilia that is FAR from DAPI
+%% Discard cilia that are FAR from DAPI and are SMALL
 DistFromDAPI            = bwdist(NucleiSegmented_MIP>0);
-DistFromDAPI_notToching = bwdist(NucleiSegmented_NotBorder);
+DistFromDAPI_notTouching = bwdist(NucleiSegmented_NotBorder);
 
 
 CiliaSegmented_P2       = regionprops(CiliaSegmented,repmat(DistFromDAPI,[1 1 numSlices]),'area',"MeanIntensity","MaxIntensity","MinIntensity");
-CiliaSegmented_P3       = regionprops(CiliaSegmented,repmat(DistFromDAPI_notToching,[1 1 numSlices]),'area',"MeanIntensity","MaxIntensity","MinIntensity");
+CiliaSegmented_P3       = regionprops(CiliaSegmented,repmat(DistFromDAPI_notTouching,[1 1 numSlices]),'area',"MeanIntensity","MaxIntensity","MinIntensity");
+
+CiliaToKeep1             = find(([CiliaSegmented_P3.MinIntensity]<15)&([CiliaSegmented_P3.Area]>50));
+CiliaToKeep             = ismember(CiliaSegmented_MIP,CiliaToKeep1);
+
+%% Determine the final Nuclei and Cilia
+% Cilia can be discarded by size or distance to nuclei
+% Nuclei can be discarded by contact with boundary
+FinalNuclei_MIP             = NucleiSegmented_MIP.*NucleiSegmented_NotBorder;
+FinalCilia_MIP              = CiliaSegmented_MIP.*CiliaToKeep;
+
+FinalNuclei_MIP_P           = regionprops(FinalNuclei_MIP,'Area','Centroid','BoundingBox','MajorAxisLength','Circularity','Orientation','Eccentricity','MinorAxisLength','Orientation');
+FinalCilia_MIP_P            = regionprops(FinalCilia_MIP,'Area','Centroid','BoundingBox','MajorAxisLength','Circularity','Orientation','Eccentricity','MinorAxisLength','Orientation');
+
+
+Output.FinalNuclei_MIP      = FinalNuclei_MIP;
+Output.FinalCilia_MIP       = FinalCilia_MIP;
+Output.FinalNuclei_MIP_P    = FinalNuclei_MIP_P;
+Output.FinalCilia_MIP_P     = FinalCilia_MIP_P;
+Output.TotalNuclei          = sum([Output.FinalNuclei_MIP_P.Area]>0);
+Output.TotalCilia           = sum([Output.FinalCilia_MIP_P.Area]>0);
 
 %% Segment Basal Body
 % k=9;
