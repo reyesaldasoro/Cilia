@@ -30,6 +30,7 @@ h1.XTickLabelRotation   = 90;
 h1.Position             = [  0.0674    0.27    0.9112    0.60];
 h0.Position             = [  643.4000   97.8000  812.0000  333.6000];
 %%
+figure
 for k=87%:numFiles
 
     currFile    = strcat(baseDir,filesep,dir0(k).name);
