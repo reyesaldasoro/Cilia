@@ -1,4 +1,4 @@
-function Output = segmentCilia(CiliaVolume)
+function Output = segmentCilia(CiliaVolume,cp)
 
 %% Separate the channels and calculate dimensiones
 DAPI                    = squeeze(CiliaVolume(:,:,3,:));
@@ -11,7 +11,9 @@ Green                   = squeeze(CiliaVolume(:,:,2,:));
 if ~exist('cp','var')
     cp                  = cellpose(Model="nuclei");
 end
-NucleiSegmented_MIP     =  segmentCells2D(cp,max(DAPI,[],3),ImageCellDiameter=60);
+%NucleiSegmented_MIP     =  segmentCells2D(cp,max(DAPI,[],3),ImageCellDiameter=60);
+NucleiSegmented_MIP     =  segmentCells2D(cp,max(DAPI,[],3),ImageCellDiameter=90, CellThreshold=-2,FlowErrorThreshold=1);
+
 %NucleiSegmented_MIP_P   = regionprops(NucleiSegmented_MIP,'Area','Centroid','BoundingBox','MajorAxisLength','Circularity','Orientation','Eccentricity','MinorAxisLength','Orientation');
 
 % (b) Intensity threshold for the volume
