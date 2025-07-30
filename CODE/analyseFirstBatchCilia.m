@@ -1,4 +1,8 @@
 
+clear all
+close all
+
+
 
 baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_11';
 dir0        = dir(strcat(baseDir,filesep,'*OVER.tif'));
@@ -29,22 +33,48 @@ h1.XTickLabel           = shortName;
 h1.XTickLabelRotation   = 90;
 h1.Position             = [  0.0674    0.27    0.9112    0.60];
 h0.Position             = [  643.4000   97.8000  812.0000  333.6000];
-%% Read all cells and extract ratios
+%% Read all cells and extract ratios, lengths 
 jet2 = [0 0 0;jet];
-
+    cp                  = cellpose(Model="nuclei");
+%%
 for k=1:numFiles
     tic
     disp(k)
     shortName{k}            = dir0(k).name(26:34);
     currFile                = strcat(baseDir,filesep,dir0(k).name);
     CiliaVolume             = readCilia(currFile);
-    Output                  = segmentCilia(CiliaVolume);
-    Ratio(k)                = Output.TotalCilia/Output.TotalNuclei;
-    figure
+    Output                  = segmentCilia(CiliaVolume,cp);
+    % Save individual results
+    RatioPerCase(k,1)              = Output.TotalCilia/Output.TotalNuclei;  
+    q1                      = [Output.FinalCilia_MIP_P.MajorAxisLength];
+    q2                      = q1(q1>0);
+    LengtsPerCase(k,1:numel(q2))=q2;
+
+    % Display results
+    h0=figure;
     finalOutput(:,:,k)      = ((Output.FinalCilia_MIP==0).*Output.FinalNuclei_MIP)+(20+Output.FinalCilia_MIP);
+    h1=subplot(121);
+    imagesc(2*max(CiliaVolume/16/255,[],4))
+
+    for k2=1:numel(Output.FinalCilia_MIP_P)
+        currLength = Output.FinalCilia_MIP_P(k2).MajorAxisLength/ 4.8438;
+        text(10+Output.FinalCilia_MIP_P(k2).Centroid(1),10+Output.FinalCilia_MIP_P(k2).Centroid(2),num2str(currLength,3),'color','w',FontSize=7)
+    end
+    title(strcat(shortName{k},',  ratio =',num2str(RatioPerCase(k))),'interpreter','none')
+    h2=subplot(122);
     imagesc(finalOutput(:,:,k))
-    title(strcat(shortName{k},',  ratio =',num2str(Ratio(k))),'interpreter','none')
+    for k2=1:numel(Output.FinalCilia_MIP_P)
+        currLength = Output.FinalCilia_MIP_P(k2).MajorAxisLength/ 4.8438;
+        text(10+Output.FinalCilia_MIP_P(k2).Centroid(1),10+Output.FinalCilia_MIP_P(k2).Centroid(2),num2str(currLength,3),'color','w',FontSize=7)
+    end
+    colormap (jet2)
     t2=toc;
+    h0.Position = [ 488   309   829   353];
+    h1.Position=[0.05 0.06 0.44 0.88];
+    h2.Position=[0.55 0.06 0.44 0.88];
+    filename = strcat('Results/Res_2025_07_30_',shortName{k},'.png');
+    print('-dpng','-r100',filename)
+
 end
 
 %%
