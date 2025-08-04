@@ -3,6 +3,8 @@ function Output = segmentCilia(CiliaVolume,cp)
 %% Separate the channels and calculate dimensiones
 DAPI                    = squeeze(CiliaVolume(:,:,3,:));
 Green                   = squeeze(CiliaVolume(:,:,2,:));
+BasalBody               = squeeze(CiliaVolume(:,:,1,:));
+BasalBody_MIP           = max(BasalBody,[],3);
 [rows,cols,numSlices]   = size(DAPI);
 
 %% Segment DAPI based on
@@ -82,6 +84,14 @@ Output.TotalNuclei          = sum([Output.FinalNuclei_MIP_P.Area]>0);
 Output.TotalCilia           = sum([Output.FinalCilia_MIP_P.Area]>0);
 
 %% Segment Basal Body
+if numel(FinalCilia_MIP_P)>0
+    distFromCilia               = bwdist(CiliaSegmented_MIP>0);
+    for k=1:50
+        qq(k)=max(BasalBody_MIP(distFromCilia==k));
+    end
+    plot(qq/(qq(1)))
+end
+
 % k=9;
 % imagesc(DAPI(:,:,k).*(NucleiSegmented3(:,:,k)>0))  ;colorbar  
 % 
