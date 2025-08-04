@@ -88,7 +88,7 @@ for k=4:numFiles
     RatioPerCase(k,1)       = Output.TotalCilia/Output.TotalNuclei;  
     q1                      = [Output.FinalCilia_MIP_P.MajorAxisLength];
     q2                      = q1(q1>0);
-    LengtsPerCase(k,1:numel(q2))=q2;
+    LengthsPerCase(k,1:numel(q2))=q2;
 
     % % Display results
     % h0=figure;
@@ -117,7 +117,7 @@ for k=4:numFiles
 
 end
 
-    LengtsPerCaseC=LengtsPerCase/CalibrationFactor;
+    LengtsPerCaseC=LengthsPerCase/CalibrationFactor;
 
 
 %%
