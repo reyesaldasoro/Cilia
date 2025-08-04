@@ -76,21 +76,56 @@ FinalNuclei_MIP_P           = regionprops(FinalNuclei_MIP,'Area','Centroid','Bou
 FinalCilia_MIP_P            = regionprops(FinalCilia_MIP,'Area','Centroid','BoundingBox','MajorAxisLength','Circularity','Orientation','Eccentricity','MinorAxisLength','Orientation');
 
 
+
+%% Segment Basal Body
+% Only consider those regions that are next to Cilia
+distFromCilia               = bwdist(FinalCilia_MIP>0);
+BasalBody_MIP               = max(BasalBody,[],3);
+BasalBody_ROI               = bwlabel((FinalCilia_MIP==0).*(distFromCilia<=10));
+BasalBody_ROI_P             = regionprops(BasalBody_ROI,BasalBody_MIP,'Area','MaxIntensity','MeanIntensity','MinIntensity');
+
+BasalBody_0                 = ((BasalBody_ROI>0).*(BasalBody_MIP>150));
+BasalBody_1                 = imclose(BasalBody_0,ones(5));
+BasalBody_1_L               = bwlabel(BasalBody_1);
+BasalBody_1_P               = regionprops(BasalBody_1_L,BasalBody_MIP,'Area','MaxIntensity','MeanIntensity','MinIntensity');
+BasalBody_2                 = bwlabel(ismember(BasalBody_1_L,find([BasalBody_1_P.Area]>2)));
+BasalBody_2_P               = regionprops(BasalBody_2,BasalBody_MIP,'Area','MaxIntensity','MeanIntensity','MinIntensity');
+
+% 
+
+% if numel(FinalCilia_MIP_P)>0
+%     distFromCilia               = bwdist(CiliaSegmented_MIP>0);
+%     for k=1:50
+%         qq(k)=max(BasalBody_MIP(distFromCilia==k));
+%     end
+%     plot(qq/(qq(1)))
+% end
+% 
+% imagesc((CiliaSegmented_MIP>0)+(BasalBody_MIP<150).*(distFromCilia<10));colorbar
+
+
+%% Prepare output
+
 Output.FinalNuclei_MIP      = FinalNuclei_MIP;
 Output.FinalCilia_MIP       = FinalCilia_MIP;
 Output.FinalNuclei_MIP_P    = FinalNuclei_MIP_P;
 Output.FinalCilia_MIP_P     = FinalCilia_MIP_P;
+
+Output.FinalBasalBody_MIP   = BasalBody_2;
+Output.FinalBasalBody_MIP_P = BasalBody_2_P;
+
 Output.TotalNuclei          = sum([Output.FinalNuclei_MIP_P.Area]>0);
 Output.TotalCilia           = sum([Output.FinalCilia_MIP_P.Area]>0);
+Output.TotalBasal           = sum([Output.FinalBasalBody_MIP_P.Area]>0);
 
-%% Segment Basal Body
-if numel(FinalCilia_MIP_P)>0
-    distFromCilia               = bwdist(CiliaSegmented_MIP>0);
-    for k=1:50
-        qq(k)=max(BasalBody_MIP(distFromCilia==k));
-    end
-    plot(qq/(qq(1)))
-end
+
+
+
+
+
+
+
+
 
 % k=9;
 % imagesc(DAPI(:,:,k).*(NucleiSegmented3(:,:,k)>0))  ;colorbar  
