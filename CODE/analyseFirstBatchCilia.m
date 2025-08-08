@@ -29,7 +29,9 @@ for k=1:numFiles
     q1                      = [Output.FinalCilia_MIP_P.MajorAxisLength];
     q2                      = q1(q1>0);
     LengthsPerCase(k,1:numel(q2))=q2;
-
+    t2(k)=toc;
+    %figure(k)
+    %imagesc(Output.FinalCombination_RGB)
     % % Display results
     % h0=figure;
     % finalOutput(:,:,k)      = ((Output.FinalCilia_MIP==0).*Output.FinalNuclei_MIP)+(20+Output.FinalCilia_MIP);
