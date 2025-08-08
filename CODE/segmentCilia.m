@@ -108,12 +108,27 @@ BasalBody_2_P               = regionprops(BasalBody_2,BasalBody_MIP,'Area','MaxI
 
 Output.FinalNuclei_MIP      = FinalNuclei_MIP;
 Output.FinalCilia_MIP       = FinalCilia_MIP;
+Output.FinalBasalBody_MIP   = BasalBody_2;
+
 Output.FinalNuclei_MIP_P    = FinalNuclei_MIP_P;
 Output.FinalCilia_MIP_P     = FinalCilia_MIP_P;
-
-Output.FinalBasalBody_MIP   = BasalBody_2;
 Output.FinalBasalBody_MIP_P = BasalBody_2_P;
 
+%% output for display, for visualisation cilia and basal body are dilated
+
+BasalBody_3                 = imdilate(BasalBody_2,ones(5));
+FinalCilia_MIP_Dil          = imdilate(FinalCilia_MIP,ones(5));
+
+Output.FinalCombination     = 2*(BasalBody_3==0).*(FinalCilia_MIP_Dil>0) + (BasalBody_3==0).*(FinalCilia_MIP_Dil==0).*(Output.FinalNuclei_MIP>0) +3*(BasalBody_3>0);
+
+
+Output.FinalCombination_RGB(:,:,1) = Output.FinalCombination  ==3 ;
+Output.FinalCombination_RGB(:,:,2) = Output.FinalCombination  ==2 ;
+Output.FinalCombination_RGB(:,:,3) = Output.FinalCombination  ==1 ;
+
+imagesc(Output.FinalCombination_RGB)
+
+%%
 Output.TotalNuclei          = sum([Output.FinalNuclei_MIP_P.Area]>0);
 Output.TotalCilia           = sum([Output.FinalCilia_MIP_P.Area]>0);
 Output.TotalBasal           = sum([Output.FinalBasalBody_MIP_P.Area]>0);
