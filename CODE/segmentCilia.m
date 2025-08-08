@@ -78,13 +78,19 @@ FinalCilia_MIP_P            = regionprops(FinalCilia_MIP,'Area','Centroid','Boun
 
 
 %% Segment Basal Body
-% Only consider those regions that are next to Cilia
+% Only consider those regions that are next to Cilia = distance less than
+% 10 pixels
 distFromCilia               = bwdist(FinalCilia_MIP>0);
 BasalBody_MIP               = max(BasalBody,[],3);
 BasalBody_ROI               = bwlabel((FinalCilia_MIP==0).*(distFromCilia<=10));
 BasalBody_ROI_P             = regionprops(BasalBody_ROI,BasalBody_MIP,'Area','MaxIntensity','MeanIntensity','MinIntensity');
 
-BasalBody_0                 = ((BasalBody_ROI>0).*(BasalBody_MIP>150));
+% Only bright pixels, would 150 be a good threshold or determine based on 
+meanROI                     = mean(BasalBody_MIP(BasalBody_ROI>0));
+stdROI                      = std (BasalBody_MIP(BasalBody_ROI>0));
+
+
+BasalBody_0                 = ((BasalBody_ROI>0).*(BasalBody_MIP>(meanROI+3*stdROI)));
 BasalBody_1                 = imclose(BasalBody_0,ones(5));
 BasalBody_1_L               = bwlabel(BasalBody_1);
 BasalBody_1_P               = regionprops(BasalBody_1_L,BasalBody_MIP,'Area','MaxIntensity','MeanIntensity','MinIntensity');
