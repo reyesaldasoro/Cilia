@@ -126,12 +126,18 @@ Output.FinalCombination_RGB(:,:,1) = Output.FinalCombination  ==3 ;
 Output.FinalCombination_RGB(:,:,2) = Output.FinalCombination  ==2 ;
 Output.FinalCombination_RGB(:,:,3) = Output.FinalCombination  ==1 ;
 
-imagesc(Output.FinalCombination_RGB)
+%imagesc(Output.FinalCombination_RGB)
 
 %%
 Output.TotalNuclei          = sum([Output.FinalNuclei_MIP_P.Area]>0);
 Output.TotalCilia           = sum([Output.FinalCilia_MIP_P.Area]>0);
 Output.TotalBasal           = sum([Output.FinalBasalBody_MIP_P.Area]>0);
+
+Output.Ratio_C_N            = Output.TotalCilia/Output.TotalNuclei;
+Output.Ratio_B_C            = Output.TotalBasal/Output.TotalCilia;
+
+
+
 
 
 
