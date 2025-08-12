@@ -16,7 +16,7 @@ CalibrationFactor       = 4.8438;
 cp                      = cellpose(Model="nuclei");
 %%
 
-for k=10%:numFiles
+for k=1:numFiles
     tic
     disp(k)
     shortName{k}            = dir0(k).name(26:34);
