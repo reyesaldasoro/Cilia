@@ -5,6 +5,8 @@ DAPI                    = squeeze(CiliaVolume(:,:,3,:));
 Green                   = squeeze(CiliaVolume(:,:,2,:));
 BasalBody               = squeeze(CiliaVolume(:,:,1,:));
 BasalBody_MIP           = max(BasalBody,[],3);
+DAPI_MIP                = max(DAPI,[],3);
+Green_MIP               = max(Green,[],3);
 [rows,cols,numSlices]   = size(DAPI);
 
 %% Segment DAPI based on
@@ -14,7 +16,7 @@ if ~exist('cp','var')
     cp                  = cellpose(Model="nuclei");
 end
 %NucleiSegmented_MIP     =  segmentCells2D(cp,max(DAPI,[],3),ImageCellDiameter=60);
-NucleiSegmented_MIP     =  segmentCells2D(cp,max(DAPI,[],3),ImageCellDiameter=90, CellThreshold=-2,FlowErrorThreshold=1);
+NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=90, CellThreshold=-2,FlowErrorThreshold=1);
 
 %NucleiSegmented_MIP_P   = regionprops(NucleiSegmented_MIP,'Area','Centroid','BoundingBox','MajorAxisLength','Circularity','Orientation','Eccentricity','MinorAxisLength','Orientation');
 
@@ -94,8 +96,14 @@ BasalBody_0                 = ((BasalBody_ROI>0).*(BasalBody_MIP>(meanROI+3*stdR
 BasalBody_1                 = imclose(BasalBody_0,ones(5));
 BasalBody_1_L               = bwlabel(BasalBody_1);
 BasalBody_1_P               = regionprops(BasalBody_1_L,BasalBody_MIP,'Area','MaxIntensity','MeanIntensity','MinIntensity');
-BasalBody_2                 = bwlabel(ismember(BasalBody_1_L,find([BasalBody_1_P.Area]>2)));
-BasalBody_2_P               = regionprops(BasalBody_2,BasalBody_MIP,'Area','MaxIntensity','MeanIntensity','MinIntensity');
+BasalBody_2                 = (ismember(BasalBody_1_L,find([BasalBody_1_P.Area]>2)));
+%%
+BasalBody_3                 = imdilate(BasalBody_2,ones(6,6));
+BasalBody_4                 = bwlabel((FinalCilia_MIP==0).*BasalBody_3);
+
+
+%%
+BasalBody_2_P               = regionprops(BasalBody_4,BasalBody_MIP,'Area','MaxIntensity','MeanIntensity','MinIntensity','Centroid');
 
 % 
 
@@ -114,7 +122,7 @@ BasalBody_2_P               = regionprops(BasalBody_2,BasalBody_MIP,'Area','MaxI
 
 Output.FinalNuclei_MIP      = FinalNuclei_MIP;
 Output.FinalCilia_MIP       = FinalCilia_MIP;
-Output.FinalBasalBody_MIP   = BasalBody_2;
+Output.FinalBasalBody_MIP   = BasalBody_4;
 
 Output.FinalNuclei_MIP_P    = FinalNuclei_MIP_P;
 Output.FinalCilia_MIP_P     = FinalCilia_MIP_P;
@@ -122,7 +130,7 @@ Output.FinalBasalBody_MIP_P = BasalBody_2_P;
 
 %% output for display, for visualisation cilia and basal body are dilated
 
-BasalBody_3                 = imdilate(BasalBody_2,ones(5));
+BasalBody_3                 = imdilate(BasalBody_4,ones(5));
 FinalCilia_MIP_Dil          = imdilate(FinalCilia_MIP,ones(5));
 
 Output.FinalCombination     = 2*(BasalBody_3==0).*(FinalCilia_MIP_Dil>0) + (BasalBody_3==0).*(FinalCilia_MIP_Dil==0).*(Output.FinalNuclei_MIP>0) +3*(BasalBody_3>0);
@@ -144,7 +152,9 @@ Output.Ratio_B_C            = Output.TotalBasal/Output.TotalCilia;
 
 
 
-
+Output.BasalBody_MIP        = BasalBody_MIP;
+Output.DAPI_MIP             = DAPI_MIP;        
+Output.Green_MIP            = Green_MIP;
 
 
 
