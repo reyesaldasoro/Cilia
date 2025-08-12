@@ -16,7 +16,7 @@ CalibrationFactor       = 4.8438;
 cp                      = cellpose(Model="nuclei");
 %%
 
-for k=1:numFiles
+for k=10%:numFiles
     tic
     disp(k)
     shortName{k}            = dir0(k).name(26:34);
@@ -61,7 +61,25 @@ end
 
     LengtsPerCaseC=LengthsPerCase/CalibrationFactor;
 
+%%
 
+h0=figure;
+h1=gca;
+hold off
+
+plot(1:40,Ratios_C_N,'b-o',1:40,Ratios_B_C,'r-x');grid on;axis tight
+grid on
+
+
+title('Ratios Cilia/Nuclei/Basal Body')
+h1.TickLabelInterpreter = 'none';
+h1.XTick                = 1:numFiles;
+h1.XTickLabel           = shortName;
+h1.XTickLabelRotation   = 90;
+h1.Position             = [  0.0674    0.29    0.9112    0.60];
+h0.Position             = [  643.4000   97.8000  812.0000  333.6000];
+
+hL = legend('Cilia/Nuclei','Basal Body/Cilia','Location','southeast');
 %%
 
 h0=figure;
@@ -77,6 +95,71 @@ h1.XTickLabel           = shortName;
 h1.XTickLabelRotation   = 90;
 h1.Position             = [  0.0674    0.27    0.9112    0.60];
 h0.Position             = [  643.4000   97.8000  812.0000  333.6000];
+
+%%
+
+
+h0=figure;
+h1=gca;
+
+imagesc(LengtsPerCaseC')
+colormap(hot)
+colorbar
+
+title('Length Cilia')
+h1.TickLabelInterpreter = 'none';
+h1.XTick                = 1:numFiles;
+h1.XTickLabel           = shortName;
+h1.XTickLabelRotation   = 90;
+h1.Position             = [  0.0674    0.29    0.86    0.60];
+h0.Position             = [  643.4000   97.8000  812.0000  333.6000];
+
+
+%%
+
+
+h0=figure;
+h1=gca;
+
+L2=LengtsPerCaseC;
+L2(L2==0)=nan;
+
+ribbon(L2')
+
+axis ij
+
+title('Length Cilia')
+h1.TickLabelInterpreter = 'none';
+h1.XTick                = 1:numFiles;
+h1.XTickLabel           = shortName;
+h1.XTickLabelRotation   = 90;
+h1.Position             = [  0.0674    0.29    0.86    0.60];
+h0.Position             = [  643.4000   97.8000  812.0000  333.6000];
+
+h1.View = [  -15.5763   28.3536];
+
+h1.ZLabel.String = 'Cilia Length [\mum]';
+
+%%
+
+
+h0=figure;
+h1=gca;
+
+ plot(sum(LengtsPerCaseC,2)./sum(LengtsPerCaseC>0,2),'-bo')
+
+title('Average Cilia Length')
+h1.TickLabelInterpreter = 'none';
+h1.XTick                = 1:numFiles;
+h1.XTickLabel           = shortName;
+h1.XTickLabelRotation   = 90;
+h1.Position             = [  0.0674    0.29    0.86    0.60];
+h0.Position             = [  643.4000   97.8000  812.0000  333.6000];
+grid on
+
+
+h1.YLabel.String = 'Cilia Length [\mum]';
+
 
 
 
