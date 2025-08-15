@@ -25,13 +25,24 @@ end
 
 switch magnification
     case 20
-        NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=50, CellThreshold=-2,FlowErrorThreshold=1);
-    case 40
         NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=40, CellThreshold=0,FlowErrorThreshold=1);
+        ciliaSize               = 2;
+        greenT_H                = 250;
+        greenT_L                = 150;
+    case 40
+        NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=70, CellThreshold=0,FlowErrorThreshold=1);
+        ciliaSize               = 20;
+        greenT_H                = 250;
+        greenT_L                = 150;
+
     case 60
         NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=90, CellThreshold=-2,FlowErrorThreshold=1);
+        ciliaSize               = 50;
+        greenT_H                = 900;
+        greenT_L                = 300;
     case 100
         NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=120, CellThreshold=-2,FlowErrorThreshold=1);
+        ciliaSize               = 70;
 end
 %NucleiSegmented_MIP_P   = regionprops(NucleiSegmented_MIP,'Area','Centroid','BoundingBox','MajorAxisLength','Circularity','Orientation','Eccentricity','MinorAxisLength','Orientation');
 
@@ -40,8 +51,13 @@ for k=1:numSlices
     tt(k) = 16*255*graythresh(uint8(DAPI(:,:,k)/16));
 end
 tt2 = sort(tt);
-NucleiSegmented         = (smooth3(DAPI,"gaussian",9)>tt2(3)).*repmat(NucleiSegmented_MIP,[1 1 numSlices]);
 
+if numSlices>1
+    NucleiSegmented         = (smooth3(DAPI,"gaussian",9)>tt2(3)).*repmat(NucleiSegmented_MIP,[1 1 numSlices]);
+else
+    NucleiSegmented         = (NucleiSegmented_MIP);
+    %NucleiSegmented         = (imfilter(DAPI,fspecial("gaussian",9))>tt2(1)).*(NucleiSegmented_MIP);
+end
 % smooth results
 for k=1:numSlices
     NucleiSegmented(:,:,k) = imfill(NucleiSegmented(:,:,k),'holes');
@@ -58,8 +74,8 @@ end
 
 %%
 % Perform a hysteresis thresholding for the cilia
-[q1,q2]                 = bwlabeln(Green>900);
-[q3,q4]                 = bwlabeln(Green>300);
+[q1,q2]                 = bwlabeln(Green>greenT_H);
+[q3,q4]                 = bwlabeln(Green>greenT_L);
 q5                      = ismember(q3,unique(q3(q1>0)));
 [CiliaSegmented,q6]     = bwlabeln(ismember(q3,unique(q3(q1>0))));
 %CiliaSegmented_P        = regionprops(CiliaSegmented,squeeze(Green),'area',"MeanIntensity","MaxIntensity","MinIntensity");
@@ -80,7 +96,7 @@ DistFromDAPI_notTouching = bwdist(NucleiSegmented_NotBorder);
 CiliaSegmented_P2       = regionprops(CiliaSegmented,repmat(DistFromDAPI,[1 1 numSlices]),'area',"MeanIntensity","MaxIntensity","MinIntensity");
 CiliaSegmented_P3       = regionprops(CiliaSegmented,repmat(DistFromDAPI_notTouching,[1 1 numSlices]),'area',"MeanIntensity","MaxIntensity","MinIntensity");
 
-CiliaToKeep1             = find(([CiliaSegmented_P3.MinIntensity]<15)&([CiliaSegmented_P3.Area]>50));
+CiliaToKeep1             = find(([CiliaSegmented_P3.MinIntensity]<15)&([CiliaSegmented_P3.Area]>ciliaSize));
 CiliaToKeep             = ismember(CiliaSegmented_MIP,CiliaToKeep1);
 
 %% Determine the final Nuclei and Cilia
