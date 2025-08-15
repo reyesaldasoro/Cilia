@@ -1,7 +1,20 @@
-function CiliaVolume = readCilia(currFile)
+function [CiliaVolume,magnification] = readCilia(currFile)
 
 b                                       = imfinfo(currFile);
 numSlices                               = numel(b);
+
+
+
+% Determine the magnification of the microscope x20 x40 x60 x100
+
+
+magPosition         = (strfind(b(1).ImageDescription,'0x '));
+magnification       = str2double(b(1).ImageDescription(magPosition(1)-2:magPosition(1)));
+
+
+
+
+
 
 % determine the number of channels, it may be that there are 2, 3 or 4
 % channels depending on the acquisition. The ImageDescription field has
@@ -36,6 +49,10 @@ numSlices                               = numel(b);
               % <Channel AcquisitionMode="LaserScanningConfocalMicroscopy" ContrastMethod="Brightfield" ID="Channel:3" Name="TD" PinholeSize="38.314175">
               %    <DetectorSettings Binning="1x1" ID="Detector:0" />
               % </Channel>
+
+
+
+
 
 
 switch numel(strfind(b(1).ImageDescription,'ID="Channel'))
