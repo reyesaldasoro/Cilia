@@ -11,11 +11,24 @@ dir0        = dir(strcat(baseDir,filesep,'*.tif'));
 numFiles    = numel(dir0);
 
 %%
+
+setsToRead  = [1 4 7 8 11 16 19 22 25 28 31 34 37 40 43 46 49 52 55 58 61 64 67 70 73 76 79 82 85];
+numFiles    = numel(setsToRead);
+
 for k=1:numFiles
+    disp(k)
     %shortName{k}            = dir0(k).name(26:34);
-    currFile                = strcat(baseDir,filesep,dir0(k).name);
-    a                       = imfinfo(currFile);
-    dir0(k).numSlices       = numel(a);
+    currFile                = strcat(baseDir,filesep,dir0(setsToRead(k)).name);
+    %a                       = imfinfo(currFile);
+    %dir0(k).numSlices       = numel(a);
+    %currFile                    = strcat(baseDir,filesep,dir0(k).name);
+    [CiliaVolume,magnification] = readCilia(currFile);
+    %figure
+    imagesc(max(CiliaVolume(:,:,:,:)/2/255,[],4))
+    title (dir0(setsToRead(k)).name,'Interpreter','none')
+    filename = strcat('Experiment_1_Datasets/',dir0(setsToRead(k)).name,'.png');
+    print('-dpng','-r100',filename)
+    
 end
 
 %% Read all cells and extract ratios, lengths 
@@ -24,12 +37,12 @@ CalibrationFactor       = 4.8438;
 cp                      = cellpose(Model="nuclei");
 %%
 
-for k=70 :numFiles
+for k=73 %:numFiles
     tic
     disp(k)
     shortName{k}                = dir0(k).name(26:34);
     currFile                    = strcat(baseDir,filesep,dir0(k).name);
-    [CiliaVolume,magnification] = readCilia(currFile);
+    [CiliaVolume,magnification] = readCilia(currFile); 
     Output                      = segmentCilia(CiliaVolume,cp,magnification);
     % Save individual results
     Ratios_C_N(k,1)             = Output.Ratio_C_N;  
