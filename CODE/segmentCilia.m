@@ -1,4 +1,4 @@
-function Output = segmentCilia(CiliaVolume,cp)
+function Output = segmentCilia(CiliaVolume,cp,magnification)
 
 %% Separate the channels and calculate dimensiones
 DAPI                    = squeeze(CiliaVolume(:,:,3,:));
@@ -11,13 +11,28 @@ Green_MIP               = max(Green,[],3);
 
 %% Segment DAPI based on
 % (a) CellPose for the maximum intensity projection and 
-
+% (b) Magnification of 060x
 if ~exist('cp','var')
     cp                  = cellpose(Model="nuclei");
 end
-%NucleiSegmented_MIP     =  segmentCells2D(cp,max(DAPI,[],3),ImageCellDiameter=60);
-NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=90, CellThreshold=-2,FlowErrorThreshold=1);
 
+if ~exist('magnification','var')
+    magnification       = 60;
+end
+
+
+%NucleiSegmented_MIP     =  segmentCells2D(cp,max(DAPI,[],3),ImageCellDiameter=60);
+
+switch magnification
+    case 20
+        NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=50, CellThreshold=-2,FlowErrorThreshold=1);
+    case 40
+        NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=40, CellThreshold=0,FlowErrorThreshold=1);
+    case 60
+        NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=90, CellThreshold=-2,FlowErrorThreshold=1);
+    case 100
+        NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=120, CellThreshold=-2,FlowErrorThreshold=1);
+end
 %NucleiSegmented_MIP_P   = regionprops(NucleiSegmented_MIP,'Area','Centroid','BoundingBox','MajorAxisLength','Circularity','Orientation','Eccentricity','MinorAxisLength','Orientation');
 
 % (b) Intensity threshold for the volume
