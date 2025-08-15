@@ -10,25 +10,38 @@ dir0        = dir(strcat(baseDir,filesep,'*.tif'));
 
 numFiles    = numel(dir0);
 
-%%
+%% display all the sets of experiment 1
 
 setsToRead  = [1 4 7 8 11 16 19 22 25 28 31 34 37 40 43 46 49 52 55 58 61 64 67 70 73 76 79 82 85];
 numFiles    = numel(setsToRead);
 
 for k=1:numFiles
+    %k=27;
     disp(k)
-    %shortName{k}            = dir0(k).name(26:34);
+    shortName{k}            = dir0(setsToRead(k)).name;
     currFile                = strcat(baseDir,filesep,dir0(setsToRead(k)).name);
     %a                       = imfinfo(currFile);
     %dir0(k).numSlices       = numel(a);
     %currFile                    = strcat(baseDir,filesep,dir0(k).name);
     [CiliaVolume,magnification] = readCilia(currFile);
     %figure
-    imagesc(max(CiliaVolume(:,:,:,:)/2/255,[],4))
-    title (dir0(setsToRead(k)).name,'Interpreter','none')
-    filename = strcat('Experiment_1_Datasets/',dir0(setsToRead(k)).name,'.png');
-    print('-dpng','-r100',filename)
+    %imagesc(max(CiliaVolume(:,:,:,:)/2/255,[],4))
+    %title (dir0(setsToRead(k)).name,'Interpreter','none')
+    %filename = strcat('Experiment_1_Datasets/',dir0(setsToRead(k)).name,'.png');
+    %print('-dpng','-r100',filename)
+    Green                   = squeeze(CiliaVolume(:,:,2,:));
+    qq1(k,1) = median(Green(:));
+    qq1(k,2) = mean(Green(:));
+    qq1(k,3) = max(Green(:));
+    qq1(k,4) = max(Green(:))*graythresh((Green/max(Green(:))));
+    qq1(k,5) = 0.3*(max(Green(:))-median(Green(:)));
     
+    %greenS  = sort(Green(:));
+    %greenS2 = diff(greenS);
+    %subplot(211)
+    %plot(greenS2>2)
+    %subplot(212)
+    %imagesc(max(Green,[],3))
 end
 
 %% Read all cells and extract ratios, lengths 
@@ -37,6 +50,14 @@ CalibrationFactor       = 4.8438;
 cp                      = cellpose(Model="nuclei");
 %%
 
+k=11;
+   currFile                = strcat(baseDir,filesep,dir0(setsToRead(k)).name);
+    %a                       = imfinfo(currFile);
+    %dir0(k).numSlices       = numel(a);
+    %currFile                    = strcat(baseDir,filesep,dir0(k).name);
+    [CiliaVolume,magnification] = readCilia(currFile);
+ Output                      = segmentCilia(CiliaVolume,cp,magnification);
+%%
 for k=73 %:numFiles
     tic
     disp(k)
