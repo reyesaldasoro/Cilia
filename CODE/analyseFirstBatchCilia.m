@@ -24,18 +24,18 @@ CalibrationFactor       = 4.8438;
 cp                      = cellpose(Model="nuclei");
 %%
 
-for k=1:numFiles
+for k=70 :numFiles
     tic
     disp(k)
-    shortName{k}            = dir0(k).name(26:34);
-    currFile                = strcat(baseDir,filesep,dir0(k).name);
-    CiliaVolume             = readCilia(currFile);
-    Output                  = segmentCilia(CiliaVolume,cp);
+    shortName{k}                = dir0(k).name(26:34);
+    currFile                    = strcat(baseDir,filesep,dir0(k).name);
+    [CiliaVolume,magnification] = readCilia(currFile);
+    Output                      = segmentCilia(CiliaVolume,cp,magnification);
     % Save individual results
-    Ratios_C_N(k,1)         = Output.Ratio_C_N;  
-    Ratios_B_C(k,1)         = Output.Ratio_B_C;  
-    q1                      = [Output.FinalCilia_MIP_P.MajorAxisLength];
-    q2                      = q1(q1>0);
+    Ratios_C_N(k,1)             = Output.Ratio_C_N;  
+    Ratios_B_C(k,1)             = Output.Ratio_B_C;  
+    q1                          = [Output.FinalCilia_MIP_P.MajorAxisLength];
+    q2                          = q1(q1>0);
     LengthsPerCase(k,1:numel(q2))=q2;
     t2(k)=toc;
     %figure(k)
