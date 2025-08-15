@@ -4,11 +4,19 @@ close all
 
 
 
-baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_11';
+baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_1';
 %baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_30';
-dir0        = dir(strcat(baseDir,filesep,'*OVER.tif'));
+dir0        = dir(strcat(baseDir,filesep,'*.tif'));
 
 numFiles    = numel(dir0);
+
+%%
+for k=1:numFiles
+    %shortName{k}            = dir0(k).name(26:34);
+    currFile                = strcat(baseDir,filesep,dir0(k).name);
+    a                       = imfinfo(currFile);
+    dir0(k).numSlices       = numel(a);
+end
 
 %% Read all cells and extract ratios, lengths 
 jet2                    = [0 0 0;jet];
