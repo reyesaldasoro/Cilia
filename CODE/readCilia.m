@@ -1,16 +1,21 @@
-function [CiliaVolume,magnification] = readCilia(currFile)
+function [CiliaVolume,magnification,calibrationFactor] = readCilia(currFile)
 
 b                                       = imfinfo(currFile);
 numSlices                               = numel(b);
 
 
 
-% Determine the magnification of the microscope x20 x40 x60 x100
-
-
+% Determine the magnification of the microscope x20 x40 x60 x100, could
+% also look for  
+%      Fluor ELWD 40x DIC M N1" NominalMagnification="40" 
 magPosition         = (strfind(b(1).ImageDescription,'0x '));
 magnification       = str2double(b(1).ImageDescription(magPosition(1)-2:magPosition(1)));
 
+
+% Determine the calibration factor, look for text 
+%     PhysicalSizeX="0.311390"
+calPosition         = (strfind(b(1).ImageDescription,'PhysicalSizeX'));
+calibrationFactor   = 1/str2double(b(1).ImageDescription(calPosition(1)+15:calPosition(1)+22));
 
 
 
