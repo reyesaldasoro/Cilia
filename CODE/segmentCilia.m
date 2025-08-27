@@ -1,4 +1,4 @@
-function Output = segmentCilia(CiliaVolume,cp,magnification)
+function Output = segmentCilia(CiliaVolume,cp,magnification,calibrationFactor)
 
 %% Separate the channels and calculate dimensiones
 DAPI                    = squeeze(CiliaVolume(:,:,3,:));
@@ -158,6 +158,9 @@ Output.FinalBasalBody_MIP   = BasalBody_4;
 Output.FinalNuclei_MIP_P    = FinalNuclei_MIP_P;
 Output.FinalCilia_MIP_P     = FinalCilia_MIP_P;
 Output.FinalBasalBody_MIP_P = BasalBody_2_P;
+Output.CiliaLength          = [Output.FinalCilia_MIP_P.MajorAxisLength]/ calibrationFactor;
+Output.NucleiLength         = [Output.FinalNuclei_MIP_P.MajorAxisLength]/ calibrationFactor;
+
 
 %% output for display, for visualisation cilia and basal body are dilated
 
@@ -180,8 +183,6 @@ Output.TotalBasal           = sum([Output.FinalBasalBody_MIP_P.Area]>0);
 
 Output.Ratio_C_N            = Output.TotalCilia/Output.TotalNuclei;
 Output.Ratio_B_C            = Output.TotalBasal/Output.TotalCilia;
-
-
 
 Output.BasalBody_MIP        = BasalBody_MIP;
 Output.DAPI_MIP             = DAPI_MIP;        
