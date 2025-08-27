@@ -29,20 +29,27 @@ switch magnification
         ciliaSize               = 2;
         greenT_H                = 250;
         greenT_L                = 150;
+        distFromNucleus         = 8;
+
     case 40
         NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=70, CellThreshold=0,FlowErrorThreshold=1);
         ciliaSize               = 20;
         greenT_H                = 250;
         greenT_L                = 150;
+        distFromNucleus         = 16;
 
     case 60
         NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=90, CellThreshold=-2,FlowErrorThreshold=1);
         ciliaSize               = 50;
         greenT_H                = 900;
         greenT_L                = 300;
+        distFromNucleus         = 24;
+
     case 100
         NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=120, CellThreshold=-2,FlowErrorThreshold=1);
         ciliaSize               = 70;
+        distFromNucleus         = 30;
+
 end
 %NucleiSegmented_MIP_P   = regionprops(NucleiSegmented_MIP,'Area','Centroid','BoundingBox','MajorAxisLength','Circularity','Orientation','Eccentricity','MinorAxisLength','Orientation');
 
@@ -96,7 +103,7 @@ DistFromDAPI_notTouching = bwdist(NucleiSegmented_NotBorder);
 CiliaSegmented_P2       = regionprops(CiliaSegmented,repmat(DistFromDAPI,[1 1 numSlices]),'area',"MeanIntensity","MaxIntensity","MinIntensity");
 CiliaSegmented_P3       = regionprops(CiliaSegmented,repmat(DistFromDAPI_notTouching,[1 1 numSlices]),'area',"MeanIntensity","MaxIntensity","MinIntensity");
 
-CiliaToKeep1             = find(([CiliaSegmented_P3.MinIntensity]<15)&([CiliaSegmented_P3.Area]>ciliaSize));
+CiliaToKeep1             = find(([CiliaSegmented_P3.MinIntensity]<distFromNucleus)&([CiliaSegmented_P3.Area]>ciliaSize));
 CiliaToKeep             = ismember(CiliaSegmented_MIP,CiliaToKeep1);
 
 %% Determine the final Nuclei and Cilia
@@ -150,6 +157,10 @@ BasalBody_2_P               = regionprops(BasalBody_4,BasalBody_MIP,'Area','MaxI
 
 
 %% Prepare output
+
+Output.Input_MIP_RGB(:,:,1) = 1.5*BasalBody_MIP;
+Output.Input_MIP_RGB(:,:,2) = Green_MIP;
+Output.Input_MIP_RGB(:,:,3) = DAPI_MIP;
 
 Output.FinalNuclei_MIP      = FinalNuclei_MIP;
 Output.FinalCilia_MIP       = FinalCilia_MIP;
