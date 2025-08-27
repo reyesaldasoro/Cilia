@@ -24,23 +24,38 @@ for k=1:numFiles
     currFile                = strcat(baseDir,filesep,dir0(k).name);
     [CiliaVolume,magnification,calibrationFactor] = readCilia(currFile);
     
-    
-    figure
-    subplot(221)
-    imagesc(max(CiliaVolume(:,:,:,:)/255,[],4));
-    title(shortName{k},Interpreter="none");colorbar
-    subplot(222)
-    imagesc(max(CiliaVolume(:,:,1,:),[],4));colorbar
-    subplot(223)
-    imagesc(max(CiliaVolume(:,:,2,:),[],4));colorbar
-    subplot(224)
-    imagesc(max(CiliaVolume(:,:,3,:),[],4));colorbar
-
-        colormap(hot.^0.5)
-
+    % % Display the channels separately, before segmenting
+    % figure
+    % subplot(221)
+    % imagesc(max(CiliaVolume(:,:,:,:)/255,[],4));
+    % title(shortName{k},Interpreter="none");colorbar
+    % subplot(222)
+    % imagesc(max(CiliaVolume(:,:,1,:),[],4));colorbar
+    % subplot(223)
+    % imagesc(max(CiliaVolume(:,:,2,:),[],4));colorbar
+    % subplot(224)
+    % imagesc(max(CiliaVolume(:,:,3,:),[],4));colorbar
+    % colormap(hot.^0.5)
     % imagesc(2*max(CiliaVolume(:,:,1:3,:)/16/255,[],4))
     
-    % Output                  = segmentCilia(CiliaVolume,cp,magnification,calibrationFactor);
+    Output                  = segmentCilia(CiliaVolume,cp,magnification,calibrationFactor);
+    
+    % Display Input and output
+    h0=figure;
+    h1=subplot(121);
+    imagesc(uint8(Output.Input_MIP_RGB))
+    title(shortName{k},Interpreter="none");
+    h2=subplot(122);
+    imagesc(Output.FinalCombination_RGB)
+    h0.Position = [ 488   309   829   353];
+    h1.Position=[0.05 0.06 0.44 0.88];
+    h2.Position=[0.55 0.06 0.44 0.88];    
+    
+    filename = strcat('Results/Res_2025_08_27_B_',shortName{k},'.png');
+    print('-dpng','-r100',filename)
+
+    
+    
     % % Save individual results
     % Ratios_C_N(k,1)         = Output.Ratio_C_N;  
     % Ratios_B_C(k,1)         = Output.Ratio_B_C;  
@@ -72,7 +87,7 @@ for k=1:numFiles
     % h0.Position = [ 488   309   829   353];
     % h1.Position=[0.05 0.06 0.44 0.88];
     % h2.Position=[0.55 0.06 0.44 0.88];
-    % filename = strcat('Results/Res_2025_07_31_',shortName{k},'.png');
+    % filename = strcat('Results/Res_2025_08_27_',shortName{k},'.png');
     % print('-dpng','-r100',filename)
 
 end
