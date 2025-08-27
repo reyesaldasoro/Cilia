@@ -20,17 +20,34 @@ cp                      = cellpose(Model="nuclei");
 for k=1:numFiles
     tic
     disp(k)
-    shortName{k}            = dir0(k).name(26:34);
+    shortName{k}            = dir0(k).name(26:end-4);
     currFile                = strcat(baseDir,filesep,dir0(k).name);
-    [CiliaVolume,magnification] = readCilia(currFile);
-    Output                  = segmentCilia(CiliaVolume,cp);
-    % Save individual results
-    Ratios_C_N(k,1)         = Output.Ratio_C_N;  
-    Ratios_B_C(k,1)         = Output.Ratio_B_C;  
-    q1                      = [Output.FinalCilia_MIP_P.MajorAxisLength];
-    q2                      = q1(q1>0);
-    LengthsPerCase(k,1:numel(q2))=q2;
-    t2(k)=toc;
+    [CiliaVolume,magnification,calibrationFactor] = readCilia(currFile);
+    
+    
+    figure
+    subplot(221)
+    imagesc(max(CiliaVolume(:,:,:,:)/255,[],4));
+    title(shortName{k},Interpreter="none");colorbar
+    subplot(222)
+    imagesc(max(CiliaVolume(:,:,1,:),[],4));colorbar
+    subplot(223)
+    imagesc(max(CiliaVolume(:,:,2,:),[],4));colorbar
+    subplot(224)
+    imagesc(max(CiliaVolume(:,:,3,:),[],4));colorbar
+
+        colormap(hot.^0.5)
+
+    % imagesc(2*max(CiliaVolume(:,:,1:3,:)/16/255,[],4))
+    
+    % Output                  = segmentCilia(CiliaVolume,cp,magnification,calibrationFactor);
+    % % Save individual results
+    % Ratios_C_N(k,1)         = Output.Ratio_C_N;  
+    % Ratios_B_C(k,1)         = Output.Ratio_B_C;  
+    % q1                      = [Output.FinalCilia_MIP_P.MajorAxisLength];
+    % q2                      = q1(q1>0);
+    % LengthsPerCase(k,1:numel(q2))=q2;
+    % t2(k)=toc;
     %figure(k)
     %imagesc(Output.FinalCombination_RGB)
     % % Display results
@@ -60,7 +77,7 @@ for k=1:numFiles
 
 end
 
-    LengtsPerCaseC=LengthsPerCase/CalibrationFactor;
+    % LengtsPerCaseC=LengthsPerCase/CalibrationFactor;
 
 %%
 
