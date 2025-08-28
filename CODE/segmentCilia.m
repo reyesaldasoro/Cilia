@@ -34,15 +34,15 @@ switch magnification
     case 40
         NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=70, CellThreshold=0,FlowErrorThreshold=1);
         ciliaSize               = 20;
-        greenT_H                = 250;
-        greenT_L                = 150;
+        greenT_H                = 200;
+        greenT_L                = 100;
         distFromNucleus         = 16;
 
     case 60
         NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=90, CellThreshold=-2,FlowErrorThreshold=1);
-        ciliaSize               = 50;
-        greenT_H                = 900;
-        greenT_L                = 300;
+        ciliaSize               = 35;
+        greenT_H                = 700;
+        greenT_L                = 250;
         distFromNucleus         = 24;
 
     case 100
@@ -102,9 +102,14 @@ DistFromDAPI_notTouching = bwdist(NucleiSegmented_NotBorder);
 
 CiliaSegmented_P2       = regionprops(CiliaSegmented,repmat(DistFromDAPI,[1 1 numSlices]),'area',"MeanIntensity","MaxIntensity","MinIntensity");
 CiliaSegmented_P3       = regionprops(CiliaSegmented,repmat(DistFromDAPI_notTouching,[1 1 numSlices]),'area',"MeanIntensity","MaxIntensity","MinIntensity");
+CiliaSegmented_P4       = regionprops(CiliaSegmented_MIP,'area','MajorAxisLength','MinorAxisLength','Eccentricity');
 
 CiliaToKeep1             = find(([CiliaSegmented_P3.MinIntensity]<distFromNucleus)&([CiliaSegmented_P3.Area]>ciliaSize));
-CiliaToKeep             = ismember(CiliaSegmented_MIP,CiliaToKeep1);
+CiliaToKeep2             = find(([CiliaSegmented_P4.MajorAxisLength]./[CiliaSegmented_P4.MinorAxisLength])<10);
+CiliaToKeep             = ismember(CiliaSegmented_MIP,intersect(CiliaToKeep1,CiliaToKeep2));
+
+
+
 
 %% Determine the final Nuclei and Cilia
 % Cilia can be discarded by size or distance to nuclei
