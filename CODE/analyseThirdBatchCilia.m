@@ -7,7 +7,7 @@ close all
 baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_08_22';
 %baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_11';
 %baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_30';
-dir0        = dir(strcat(baseDir,filesep,'*OVER.tif'));
+dir0        = dir(strcat(baseDir,filesep,'*.tif'));
 
 numFiles    = numel(dir0);
 
@@ -17,7 +17,7 @@ CalibrationFactor       = 4.8438;
 cp                      = cellpose(Model="nuclei");
 %%
 
-for k=1:numFiles
+for k=13 %1:numFiles
     tic
     disp(k)
     shortName{k}            = dir0(k).name(26:end-4);
@@ -52,7 +52,7 @@ for k=1:numFiles
     h2.Position=[0.55 0.06 0.44 0.88];    
     
     filename = strcat('Results/Res_2025_08_27_B_',shortName{k},'.png');
-    print('-dpng','-r100',filename)
+    %print('-dpng','-r100',filename)
 
     
     
