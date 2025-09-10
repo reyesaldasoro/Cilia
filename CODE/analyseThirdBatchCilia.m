@@ -4,9 +4,11 @@ close all
 
 
 
-baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_08_22';
-%baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_11';
+%baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_08_22';
+baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_11';
 %baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_30';
+%baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_09_01';
+
 dir0        = dir(strcat(baseDir,filesep,'*.tif'));
 
 numFiles    = numel(dir0);
@@ -17,7 +19,7 @@ CalibrationFactor       = 4.8438;
 cp                      = cellpose(Model="nuclei");
 %%
 
-for k=13 %1:numFiles
+for k=36%:numFiles
     tic
     disp(k)
     shortName{k}            = dir0(k).name(26:end-4);
@@ -36,7 +38,7 @@ for k=13 %1:numFiles
     % subplot(224)
     % imagesc(max(CiliaVolume(:,:,3,:),[],4));colorbar
     % colormap(hot.^0.5)
-    % imagesc(2*max(CiliaVolume(:,:,1:3,:)/16/255,[],4))
+    % %imagesc(2*max(CiliaVolume(:,:,1:3,:)/16/255,[],4))
     
     Output                  = segmentCilia(CiliaVolume,cp,magnification,calibrationFactor);
     
