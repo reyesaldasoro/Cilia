@@ -40,9 +40,9 @@ switch magnification
 
     case 60
         NucleiSegmented_MIP     =  segmentCells2D(cp,DAPI_MIP,ImageCellDiameter=90, CellThreshold=-2,FlowErrorThreshold=1);
-        ciliaSize               = 35;
-        greenT_H                = 700;
-        greenT_L                = 250;
+        ciliaSize               = 20;
+        greenT_H                = 950;
+        greenT_L                = 350;
         distFromNucleus         = 24;
 
     case 100
