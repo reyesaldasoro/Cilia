@@ -72,13 +72,14 @@ For batch processing of a number of images, it is possible to save all the image
 <pre class="codeinput">
 dir0        = dir('*.tif');
 numFiles    = numel(dir0);
-for k=3%:numFiles
+for k=1:numFiles
     currFile                = dir0(k).name;
     [CiliaVolume,magnification,calibrationFactor] = readCilia(currFile);    
     Output                  = segmentCilia(CiliaVolume,cp,magnification,calibrationFactor);
 end    
 </pre>
 
+This would loop over all the images, read them and segment them. It would be necessary to save separately the results for each image.
 
 
 
