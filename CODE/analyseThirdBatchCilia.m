@@ -5,9 +5,9 @@ close all
 
 
 %baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_08_22';
-baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_11';
+%baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_11';
 %baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_30';
-%baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_09_01';
+baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_09_01';
 
 dir0        = dir(strcat(baseDir,filesep,'*.tif'));
 
@@ -19,7 +19,7 @@ CalibrationFactor       = 4.8438;
 cp                      = cellpose(Model="nuclei");
 %%
 
-for k=36%:numFiles
+for k=3%:numFiles
     tic
     disp(k)
     shortName{k}            = dir0(k).name(26:end-4);
