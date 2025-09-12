@@ -19,7 +19,7 @@ CalibrationFactor       = 4.8438;
 cp                      = cellpose(Model="nuclei");
 %%
 
-for k=3%:numFiles
+for k=76 %:numFiles
     tic
     disp(k)
     shortName{k}            = dir0(k).name(26:end-4);
@@ -27,18 +27,18 @@ for k=3%:numFiles
     [CiliaVolume,magnification,calibrationFactor] = readCilia(currFile);
     
     % % Display the channels separately, before segmenting
-    % figure
-    % subplot(221)
-    % imagesc(max(CiliaVolume(:,:,:,:)/255,[],4));
-    % title(shortName{k},Interpreter="none");colorbar
-    % subplot(222)
-    % imagesc(max(CiliaVolume(:,:,1,:),[],4));colorbar
-    % subplot(223)
-    % imagesc(max(CiliaVolume(:,:,2,:),[],4));colorbar
-    % subplot(224)
-    % imagesc(max(CiliaVolume(:,:,3,:),[],4));colorbar
-    % colormap(hot.^0.5)
-    % %imagesc(2*max(CiliaVolume(:,:,1:3,:)/16/255,[],4))
+    figure
+    subplot(221)
+    imagesc(max(CiliaVolume(:,:,:,:)/255,[],4));
+    title(shortName{k},Interpreter="none");colorbar
+    subplot(222)
+    imagesc(max(CiliaVolume(:,:,1,:),[],4));colorbar
+    subplot(223)
+    imagesc(max(CiliaVolume(:,:,2,:),[],4));colorbar
+    subplot(224)
+    imagesc(max(CiliaVolume(:,:,3,:),[],4));colorbar
+    colormap(hot.^0.5)
+    %imagesc(2*max(CiliaVolume(:,:,1:3,:)/16/255,[],4))
     
     Output                  = segmentCilia(CiliaVolume,cp,magnification,calibrationFactor);
     
