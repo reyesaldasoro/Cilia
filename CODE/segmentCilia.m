@@ -123,6 +123,8 @@ FinalCilia_MIP_P            = regionprops(FinalCilia_MIP,'Area','Centroid','Boun
 
 
 %% Segment Basal Body
+basalBodyPeaks              = segmentBasalBody(BasalBody_MIP);
+
 % Only consider those regions that are next to Cilia = distance less than
 % 10 pixels
 distFromCilia               = bwdist(FinalCilia_MIP>0);
@@ -140,12 +142,8 @@ BasalBody_1                 = imclose(BasalBody_0,ones(5));
 BasalBody_1_L               = bwlabel(BasalBody_1);
 BasalBody_1_P               = regionprops(BasalBody_1_L,BasalBody_MIP,'Area','MaxIntensity','MeanIntensity','MinIntensity');
 BasalBody_2                 = (ismember(BasalBody_1_L,find([BasalBody_1_P.Area]>2)));
-%%
 BasalBody_3                 = imdilate(BasalBody_2,ones(6,6));
 BasalBody_4                 = bwlabel((FinalCilia_MIP==0).*BasalBody_3);
-
-
-%%
 BasalBody_2_P               = regionprops(BasalBody_4,BasalBody_MIP,'Area','MaxIntensity','MeanIntensity','MinIntensity','Centroid');
 
 % 
