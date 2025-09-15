@@ -26,22 +26,22 @@ for k=1 %:numFiles
     currFile                = strcat(baseDir,filesep,dir0(k).name);
     [CiliaVolume,magnification,calibrationFactor] = readCilia(currFile);
     
-    % % Display the channels separately, before segmenting
-    figure
-    subplot(221)
-    imagesc(max(CiliaVolume(:,:,:,:)/255,[],4));
-    title(shortName{k},Interpreter="none");colorbar
-    subplot(222)
-    imagesc(max(CiliaVolume(:,:,1,:),[],4));colorbar
-    subplot(223)
-    imagesc(max(CiliaVolume(:,:,2,:),[],4));colorbar
-    subplot(224)
-    imagesc(max(CiliaVolume(:,:,3,:),[],4));colorbar
-    colormap(hot.^0.5)
-    %imagesc(2*max(CiliaVolume(:,:,1:3,:)/16/255,[],4))
+    % % % Display the channels separately, before segmenting
+    % figure
+    % subplot(221)
+    % imagesc(max(CiliaVolume(:,:,:,:)/255,[],4));
+    % title(shortName{k},Interpreter="none");colorbar
+    % subplot(222)
+    % imagesc(max(CiliaVolume(:,:,1,:),[],4));colorbar
+    % subplot(223)
+    % imagesc(max(CiliaVolume(:,:,2,:),[],4));colorbar
+    % subplot(224)
+    % imagesc(max(CiliaVolume(:,:,3,:),[],4));colorbar
+    % colormap(hot.^0.5)
+    % %imagesc(2*max(CiliaVolume(:,:,1:3,:)/16/255,[],4))
     
     Output                  = segmentCilia(CiliaVolume,cp,magnification,calibrationFactor);
-    
+  
     % Display Input and output
     h0=figure;
     h1=subplot(121);
