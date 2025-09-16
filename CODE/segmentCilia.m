@@ -145,7 +145,8 @@ FinalNuclei_MIP_P           = regionprops(FinalNuclei_MIP,'Area','Centroid','Bou
 % some nuclei have been removed, these have rows in the result due to the
 % colours, remove rows
 
-FinalNuclei_MIP_P           = FinalNuclei_MIP_P( find([FinalNuclei_MIP_P.Area]>0));
+nucleiPresent                = find([FinalNuclei_MIP_P.Area]>0);
+FinalNuclei_MIP_P           = FinalNuclei_MIP_P(nucleiPresent );
 
 
 
@@ -273,7 +274,7 @@ Output2 = [ Output.TotalNuclei  Output.TotalCilia Output.TotalBasal ...
 
 
 for counterNuclei = 1:Output.TotalNuclei
-    currentRegion               = unique(nucleiRegions(FinalNuclei_MIP==counterNuclei));
+    currentRegion               = unique(nucleiRegions(FinalNuclei_MIP==nucleiPresent(counterNuclei)));
     currentRegion2              = (nucleiRegions==currentRegion);
     [~,num_BB_region]           = bwlabel(currentRegion2.*BasalBodyPeaks);
     [~,num_C_region]            = bwlabel(currentRegion2.*FinalCilia_MIP);
@@ -288,9 +289,7 @@ end
 
 
 
-
-
-% k=9;
+ k=9;
 % imagesc(DAPI(:,:,k).*(NucleiSegmented3(:,:,k)>0))  ;colorbar  
 % 
 % %%
