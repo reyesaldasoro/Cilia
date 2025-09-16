@@ -141,6 +141,14 @@ FinalCilia_MIP              = ciliaSegmented;
 
 
 FinalNuclei_MIP_P           = regionprops(FinalNuclei_MIP,'Area','Centroid','BoundingBox','MajorAxisLength','Circularity','Orientation','Eccentricity','MinorAxisLength','Orientation');
+
+% some nuclei have been removed, these have rows in the result due to the
+% colours, remove rows
+
+FinalNuclei_MIP_P           = FinalNuclei_MIP_P( find([FinalNuclei_MIP_P.Area]>0));
+
+
+
 FinalCilia_MIP_P            = regionprops(FinalCilia_MIP,'Area','Centroid','BoundingBox','MajorAxisLength','Circularity','Orientation','Eccentricity','MinorAxisLength','Orientation');
 
 
@@ -198,9 +206,9 @@ BB_inRegions                = regionprops(BasalBodyPeaks_L,nucleiRegions,'area',
 BB_inRegionsDiff            = diff(sort([BB_inRegions.MeanIntensity]));
 BB_perCell                  = [sum(BB_inRegionsDiff==0) sum(BB_inRegionsDiff==1) sum(BB_inRegionsDiff>1)];
 
-skelCilia                   = bwmorph(Output.FinalCilia_MIP,'thin','inf');
+skelCilia                   = bwmorph(FinalCilia_MIP,'thin','inf');
 branchCilia                 = bwmorph(skelCilia,'branchpoints');
-imagesc(Output.FinalCilia_MIP+skelCilia)
+%imagesc(Output.FinalCilia_MIP+skelCilia)
 
 
 %% Prepare output
@@ -221,6 +229,7 @@ Output.FinalCilia_MIP_P     = FinalCilia_MIP_P;
 Output.FinalBasalBody_MIP_P = BasalBody_2_P;
 Output.CiliaLength          = [Output.FinalCilia_MIP_P.MajorAxisLength]/ calibrationFactor;
 Output.NucleiLength         = [Output.FinalNuclei_MIP_P.MajorAxisLength]/ calibrationFactor;
+Output.NucleiArea           = [Output.FinalNuclei_MIP_P.Area]/ calibrationFactor/ calibrationFactor;
 Output.Dist_BB_Nuclei       = dist_BB_Nuclei / calibrationFactor;
 Output.Dist_C_Nuclei        = dist_C_Nuclei / calibrationFactor;
 
@@ -233,11 +242,12 @@ FinalCilia_MIP_Dil          = imdilate(FinalCilia_MIP,ones(5));
 Output.FinalCombination     = 2*(BasalBody_3==0).*(FinalCilia_MIP_Dil>0) + (BasalBody_3==0).*(FinalCilia_MIP_Dil==0).*(Output.FinalNuclei_MIP>0) +3*(BasalBody_3>0);
 
 
-Output.FinalCombination_RGB(:,:,1) = Output.FinalCombination  ==3 ;
-Output.FinalCombination_RGB(:,:,2) = Output.FinalCombination  ==2 ;
-Output.FinalCombination_RGB(:,:,3) = Output.FinalCombination  ==1 ;
+Output.FinalCombination_RGB(:,:,1)  = Output.FinalCombination  ==3 ;
+Output.FinalCombination_RGB(:,:,2)  = Output.FinalCombination  ==2 ;
+Output.FinalCombination_RGB(:,:,3)  = Output.FinalCombination  ==1 ;
 
 %imagesc(Output.FinalCombination_RGB)
+Output.FinalCombination_RGB2        = Output.FinalCombination_RGB+imdilate(nucleiRegions==0,ones(2));
 
 %%
 Output.TotalNuclei          = sum([Output.FinalNuclei_MIP_P.Area]>0);
@@ -252,8 +262,28 @@ Output.BasalBody_MIP        = BasalBody_MIP;
 Output.DAPI_MIP             = DAPI_MIP;        
 Output.Green_MIP            = Green_MIP;
 
+% Output2 will have the output as recorded per image, Output3 will record
+% per cell.
+
+Output2 = [ Output.TotalNuclei  Output.TotalCilia Output.TotalBasal ...
+            Output.BB_perCell mean([Output.CiliaLength]) ...
+            mean([Output.NucleiLength]) ...
+            Output.Dist_BB_Nuclei  ...
+            Output.Dist_C_Nuclei ];
 
 
+for counterNuclei = 1:Output.TotalNuclei
+    currentRegion               = unique(nucleiRegions(FinalNuclei_MIP==counterNuclei));
+    currentRegion2              = (nucleiRegions==currentRegion);
+    [~,num_BB_region]           = bwlabel(currentRegion2.*BasalBodyPeaks);
+    [~,num_C_region]            = bwlabel(currentRegion2.*FinalCilia_MIP);
+
+    Output3(counterNuclei,:) =[...
+        Output.NucleiArea(counterNuclei) ...
+        Output.NucleiLength(counterNuclei)...
+        num_C_region num_BB_region...   
+    ];
+end
 
 
 
