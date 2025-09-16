@@ -19,7 +19,9 @@ CalibrationFactor       = 4.8438;
 cp                      = cellpose(Model="nuclei");
 %%
 
-for k=1 %:numFiles
+results_2025_09_16={};
+
+for k=48 %:numFiles
     tic
     disp(k)
     shortName{k}            = dir0(k).name(26:end-4);
@@ -56,7 +58,7 @@ for k=1 %:numFiles
     filename = strcat('Results/Res_2025_08_27_B_',shortName{k},'.png');
     %print('-dpng','-r100',filename)
 
-    
+    results_2025_09_16{k,1}         = dir0(k).name;
     
     % % Save individual results
     % Ratios_C_N(k,1)         = Output.Ratio_C_N;  
