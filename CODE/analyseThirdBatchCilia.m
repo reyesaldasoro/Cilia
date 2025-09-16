@@ -19,9 +19,10 @@ CalibrationFactor       = 4.8438;
 cp                      = cellpose(Model="nuclei");
 %%
 
-results_2025_09_16={};
+results_2025_09_16_PerImage={};
+results_2025_09_16_PerCell={};
 
-for k=48 %:numFiles
+for k=1:numFiles
     tic
     disp(k)
     shortName{k}            = dir0(k).name(26:end-4);
@@ -50,16 +51,34 @@ for k=48 %:numFiles
     imagesc(uint8(Output.Input_MIP_RGB))
     title(shortName{k},Interpreter="none");
     h2=subplot(122);
-    imagesc(Output.FinalCombination_RGB)
+    imagesc(Output.FinalCombination_RGB2)
+    for k2=1:size(Output.FinalNuclei_MIP_P,1)
+        text(Output.FinalNuclei_MIP_P(k2).Centroid(1),Output.FinalNuclei_MIP_P(k2).Centroid(2),num2str(k2),'color','y')
+    end
     h0.Position = [ 488   309   829   353];
     h1.Position=[0.05 0.06 0.44 0.88];
-    h2.Position=[0.55 0.06 0.44 0.88];    
+    h2.Position=[0.55 0.06 0.44 0.88];
     
-    filename = strcat('Results/Res_2025_08_27_B_',shortName{k},'.png');
-    %print('-dpng','-r100',filename)
+    filename = strcat('Results_Exp_006/Res_2025_09_16_',shortName{k},'.png');
+    print('-dpng','-r100',filename)
 
-    results_2025_09_16{k,1}         = dir0(k).name;
-    
+    results_2025_09_16_PerImage{k,1}         = dir0(k).name;
+    for k3=1:10
+        results_2025_09_16_PerImage{k,k3+1}      = Output.PerImage(k3);
+    end
+
+    k6= size(results_2025_09_16_PerCell,1);
+    for k4=1:size(Output.PerCell,1)
+        results_2025_09_16_PerCell{k6+k4,1}            = dir0(k).name;
+        results_2025_09_16_PerCell{k6+k4,2}            = k4;
+        for k5=1:5
+            results_2025_09_16_PerCell{k6+k4,k5+2}     = Output.PerCell(k4,k5);
+        end
+    end
+
+
+
+
     % % Save individual results
     % Ratios_C_N(k,1)         = Output.Ratio_C_N;  
     % Ratios_B_C(k,1)         = Output.Ratio_B_C;  
@@ -94,7 +113,10 @@ for k=48 %:numFiles
     % filename = strcat('Results/Res_2025_08_27_',shortName{k},'.png');
     % print('-dpng','-r100',filename)
 
+    save('results_2025_09_16','results_2025_09_16_PerImage','results_2025_09_16_PerCell')
+    close(h0)
 end
+
 
     % LengtsPerCaseC=LengthsPerCase/CalibrationFactor;
 
