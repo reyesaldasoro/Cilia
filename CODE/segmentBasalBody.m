@@ -16,7 +16,7 @@ thres_background                =  max(BasalBody_MIP_LPF(:))*graythresh(BasalBod
 basalPeaks_1                    = bwlabel(BasalBody_MIP_LPF>(2.5*thres_background));
 basalPeaks_1P                   = regionprops(basalPeaks_1,BasalBody_MIP_LPF,'area','MeanIntensity','MaxIntensity');
 basalBodyPeaks1                 = ismember(basalPeaks_1,unique(basalPeaks_1(basalPeaks_0>0)));
-basalBodyPeaks2                 = ismember(basalPeaks_1,find([basalPeaks_1P.Area]<( mean([basalPeaks_1P.Area])+ 2*std([basalPeaks_1P.Area]))));
+basalBodyPeaks2                 = ismember(basalPeaks_1,find([basalPeaks_1P.Area]<( mean([basalPeaks_1P.Area])+ 3*std([basalPeaks_1P.Area]))));
 basalBodyPeaks                  = basalBodyPeaks2.*basalBodyPeaks1;
 
 %imagesc(q2.*(1-basalPeaks_2))
