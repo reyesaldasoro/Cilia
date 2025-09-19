@@ -18,10 +18,15 @@ if (sum(cilia_MIP_LPF(:)>(thres_background))/rows/cols)>0.05
 else
     greenPeaks_1                    = bwlabel(cilia_MIP_LPF>(thres_background));
 end
-greenPeaks_1P                   = regionprops(greenPeaks_1,cilia_MIP_LPF,'area','MeanIntensity','MaxIntensity');
-%keep regions that touch the peaks
-ciliaToKeep                     = unique(greenPeaks_1(greenPeaks_0>0));
-greenPeaks1                     = ismember(greenPeaks_1,ciliaToKeep(2:end));
-%discard regions that are too large (blobs)
-greenPeaks2                     = ismember(greenPeaks_1,find([greenPeaks_1P.Area]<( mean([greenPeaks_1P.Area])+ 3*std([greenPeaks_1P.Area]))));
-greenPeaks                      = greenPeaks2.*greenPeaks1;
+% if nothing is detected neighbouring the peaks, just dilate a bit
+if (sum(greenPeaks_1(:)))==0
+    greenPeaks                      = imdilate(greenPeaks_0,strel('disk',2));
+else
+    greenPeaks_1P                   = regionprops(greenPeaks_1,cilia_MIP_LPF,'area','MeanIntensity','MaxIntensity');
+    %keep regions that touch the peaks
+    ciliaToKeep                     = unique(greenPeaks_1(greenPeaks_0>0));
+    greenPeaks1                     = ismember(greenPeaks_1,ciliaToKeep(2:end));
+    %discard regions that are too large (blobs)
+    greenPeaks2                     = ismember(greenPeaks_1,find([greenPeaks_1P.Area]<( mean([greenPeaks_1P.Area])+ 3*std([greenPeaks_1P.Area]))));
+    greenPeaks                      = greenPeaks2.*greenPeaks1;
+end
