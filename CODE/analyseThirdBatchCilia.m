@@ -9,18 +9,18 @@ close all
 %baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_30';
 baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_09_01';
 
-dir0        = dir(strcat(baseDir,filesep,'*NS*.tif'));
+dir0        = dir(strcat(baseDir,filesep,'*WS*.tif'));
 
 numFiles    = numel(dir0);
 
 %% Read all cells and extract ratios, lengths 
 jet2                    = [0 0 0;jet];
-CalibrationFactor       = 4.8438;
+%CalibrationFactor       = 4.8438;
 cp                      = cellpose(Model="nuclei");
 %%
 
-results_2025_09_16_PerImage={};
-results_2025_09_16_PerCell={};
+results_2025_09_19_PerImage={};
+results_2025_09_19_PerCell={};
 
 for k=1:numFiles
     tic
@@ -59,20 +59,20 @@ for k=1:numFiles
     h1.Position=[0.05 0.06 0.44 0.88];
     h2.Position=[0.55 0.06 0.44 0.88];
     
-    filename = strcat('Results_Exp_006/Res_2025_09_16_',shortName{k},'.png');
+    filename = strcat('Results_Exp_006/Res_2025_09_19_',shortName{k},'.png');
     print('-dpng','-r100',filename)
 
-    results_2025_09_16_PerImage{k,1}         = dir0(k).name;
+    results_2025_09_19_PerImage{k,1}         = dir0(k).name;
     for k3=1:10
-        results_2025_09_16_PerImage{k,k3+1}      = Output.PerImage(k3);
+        results_2025_09_19_PerImage{k,k3+1}      = Output.PerImage(k3);
     end
 
-    k6= size(results_2025_09_16_PerCell,1);
+    k6= size(results_2025_09_19_PerCell,1);
     for k4=1:size(Output.PerCell,1)
-        results_2025_09_16_PerCell{k6+k4,1}            = dir0(k).name;
-        results_2025_09_16_PerCell{k6+k4,2}            = k4;
+        results_2025_09_19_PerCell{k6+k4,1}            = dir0(k).name;
+        results_2025_09_19_PerCell{k6+k4,2}            = k4;
         for k5=1:5
-            results_2025_09_16_PerCell{k6+k4,k5+2}     = Output.PerCell(k4,k5);
+            results_2025_09_19_PerCell{k6+k4,k5+2}     = Output.PerCell(k4,k5);
         end
     end
 
@@ -113,7 +113,7 @@ for k=1:numFiles
     % filename = strcat('Results/Res_2025_08_27_',shortName{k},'.png');
     % print('-dpng','-r100',filename)
 
-    save('results_2025_09_16','results_2025_09_16_PerImage','results_2025_09_16_PerCell')
+%    save('results_2025_09_19_002','results_2025_09_19_PerImage','results_2025_09_19_PerCell')
     close(h0)
 end
 
