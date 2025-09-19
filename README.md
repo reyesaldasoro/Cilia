@@ -82,5 +82,20 @@ end
 
 This would loop over all the images, read them and segment them. It would be necessary to save separately the results for each image.
 
+A graphical display is always useful to visualise  and validate results. The following code can be used to display the input image with the results
 
+<pre class="codeinput">
+    subplot(121);
+    imagesc(uint8(Output.Input_MIP_RGB))
+    title(shortName{k},Interpreter="none");
+    subplot(122);
+    imagesc(Output.FinalCombination_RGB2)
+    for k2=1:size(Output.FinalNuclei_MIP_P,1)
+        text(Output.FinalNuclei_MIP_P(k2).Centroid(1),Output.FinalNuclei_MIP_P(k2).Centroid(2),num2str(k2),'color','y')
+    end
+</pre>
+
+<img src="CODE/Results_Exp_006/Res_2025_09_16_FIB_24_NS_P16_01.png" alt="animation" width="610"/>
+
+In this case, the results include a line to delineate the region that corresponds to each cell based on a watershed based on the nuclei, in blue. The cilia are labelled green and the basal bodies in red. In addition, numbers have been added to each nucleus, which allow to match the results stored in the variables with the graphical output.
 
