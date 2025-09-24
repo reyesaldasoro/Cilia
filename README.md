@@ -1,7 +1,8 @@
 # Cilia
 
-This repository contains the code developed through the project "Global Joint Research Center for the Development of Innovative Technology for Controlling Aging Based on Primary Cilia Metabolism" in collaboration between the teams of City St Georges, University of London,
-Yonsei University and Sungkyunkwan University to analyse the cilia metabolism.
+This repository contains the code developed through the project "Global Joint Research Center for the Development of Innovative Technology for Controlling Aging Based on Primary Cilia Metabolism" in collaboration between the teams of City St Georges, University of London, Yonsei University and Sungkyunkwan University to analyse the cilia metabolism.
+
+This work was supported by the National Research Foundation of Korea (NRF) grant RS-2024-00509145 funded by the Korean Ministry of Science and ICT.
 
 
 <a name="datasets"/>
