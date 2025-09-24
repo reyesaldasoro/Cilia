@@ -9,7 +9,7 @@ close all
 %baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_30';
 baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_09_01';
 
-dir0        = dir(strcat(baseDir,filesep,'*WS*.tif'));
+dir0        = dir(strcat(baseDir,filesep,'*NS*.tif'));
 
 numFiles    = numel(dir0);
 
@@ -22,7 +22,7 @@ cp                      = cellpose(Model="nuclei");
 results_2025_09_19_PerImage={};
 results_2025_09_19_PerCell={};
 
-for k=1:numFiles
+for k=2%1:numFiles
     tic
     disp(k)
     shortName{k}            = dir0(k).name(26:end-4);
