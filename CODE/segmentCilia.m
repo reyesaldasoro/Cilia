@@ -92,6 +92,9 @@ NucleiSegmented_Border      = ismember(NucleiSegmented_MIP,(TouchingCells(2:end)
 % (internal)
 BasalBodyPeaks              = segmentBasalBody(BasalBody_MIP,20);
 GreenPeaks                  = segmentGreenPeaks(Green_MIP,100); 
+BasalBodyPeaks              = BasalBodyPeaks.*imerode(1-NucleiSegmented_Border,ones(25));
+GreenPeaks                  = GreenPeaks.*imerode(1-NucleiSegmented_Border,ones(25));
+
 GreenPeaks_L                = bwlabel(GreenPeaks);
 greenToKeep                 = unique(GreenPeaks_L.*imdilate(BasalBodyPeaks,ones(5)));
 
