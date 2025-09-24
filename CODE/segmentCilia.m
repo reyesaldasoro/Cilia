@@ -203,8 +203,9 @@ dist_C_Nuclei               = mean(q1);
 
 %regions per nuclei 
 %need to erode nuclei to detect those that are touching
-qqq=zeros(size(NucleiSegmented_MIP));
-for k=1:17
+qqq                         = zeros(size(NucleiSegmented_MIP));
+numNuclei                   = max(NucleiSegmented_MIP(:));
+for k=1:numNuclei
 qqq=qqq+k*imerode(NucleiSegmented_MIP==k,ones(5));
 end
 
@@ -258,7 +259,7 @@ Output.FinalCombination_RGB(:,:,2)  = Output.FinalCombination  ==2 ;
 Output.FinalCombination_RGB(:,:,3)  = Output.FinalCombination  ==1 ;
 
 %imagesc(Output.FinalCombination_RGB)
-Output.FinalCombination_RGB2        = Output.FinalCombination_RGB+imdilate(nucleiRegions==0,ones(3));
+Output.FinalCombination_RGB2        = Output.FinalCombination_RGB+imdilate(nucleiRegions==0,ones(5));
 
 %%
 Output.TotalNuclei          = sum([Output.FinalNuclei_MIP_P.Area]>0);
