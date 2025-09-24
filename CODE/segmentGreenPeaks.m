@@ -27,6 +27,6 @@ else
     ciliaToKeep                     = unique(greenPeaks_1(greenPeaks_0>0));
     greenPeaks1                     = ismember(greenPeaks_1,ciliaToKeep(2:end));
     %discard regions that are too large (blobs)
-    greenPeaks2                     = ismember(greenPeaks_1,find([greenPeaks_1P.Area]<( mean([greenPeaks_1P.Area])+ 3*std([greenPeaks_1P.Area]))));
+    greenPeaks2                     = ismember(greenPeaks_1,find([greenPeaks_1P.Area]<( mean([greenPeaks_1P.Area])+ 4*std([greenPeaks_1P.Area]))));
     greenPeaks                      = greenPeaks2.*greenPeaks1;
 end
