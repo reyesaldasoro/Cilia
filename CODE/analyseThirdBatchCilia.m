@@ -5,11 +5,11 @@ close all
 
 
 %baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_08_22';
-%baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_11';
+baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_11'; % Exp002
 %baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_30';
-baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_09_01';
-
-dir0        = dir(strcat(baseDir,filesep,'*NS*.tif'));
+%baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_09_01';   % Exp006
+%dir0        = dir(strcat(baseDir,filesep,'*NS*.tif'));
+dir0        = dir(strcat(baseDir,filesep,'*.tif'));
 
 numFiles    = numel(dir0);
 
@@ -19,10 +19,10 @@ jet2                    = [0 0 0;jet];
 cp                      = cellpose(Model="nuclei");
 %%
 
-results_2025_09_19_PerImage={};
-results_2025_09_19_PerCell={};
+results_2025_09_29_PerImage={};
+results_2025_09_29_PerCell={};
 
-for k=2%1:numFiles
+for k=1:numFiles
     tic
     disp(k)
     shortName{k}            = dir0(k).name(26:end-4);
@@ -59,20 +59,22 @@ for k=2%1:numFiles
     h1.Position=[0.05 0.06 0.44 0.88];
     h2.Position=[0.55 0.06 0.44 0.88];
     
-    filename = strcat('Results_Exp_006/Res_2025_09_19_',shortName{k},'.png');
+    %filename = strcat('Results_Exp_006/Res_2025_09_19_',shortName{k},'.png');
+    %filename = strcat('Results_Exp_006/Res_2025_09_19_',shortName{k},'.png');
+    filename = strcat('Results_Exp_002/Res_2025_09_29_',shortName{k},'.png');
     print('-dpng','-r100',filename)
 
-    results_2025_09_19_PerImage{k,1}         = dir0(k).name;
+    results_2025_09_29_PerImage{k,1}         = dir0(k).name;
     for k3=1:10
-        results_2025_09_19_PerImage{k,k3+1}      = Output.PerImage(k3);
+        results_2025_09_29_PerImage{k,k3+1}      = Output.PerImage(k3);
     end
 
-    k6= size(results_2025_09_19_PerCell,1);
+    k6= size(results_2025_09_29_PerCell,1);
     for k4=1:size(Output.PerCell,1)
-        results_2025_09_19_PerCell{k6+k4,1}            = dir0(k).name;
-        results_2025_09_19_PerCell{k6+k4,2}            = k4;
+        results_2025_09_29_PerCell{k6+k4,1}            = dir0(k).name;
+        results_2025_09_29_PerCell{k6+k4,2}            = k4;
         for k5=1:5
-            results_2025_09_19_PerCell{k6+k4,k5+2}     = Output.PerCell(k4,k5);
+            results_2025_09_29_PerCell{k6+k4,k5+2}     = Output.PerCell(k4,k5);
         end
     end
 
@@ -113,7 +115,7 @@ for k=2%1:numFiles
     % filename = strcat('Results/Res_2025_08_27_',shortName{k},'.png');
     % print('-dpng','-r100',filename)
 
-%    save('results_2025_09_19_002','results_2025_09_19_PerImage','results_2025_09_19_PerCell')
+    save('results_2025_09_29_002','results_2025_09_29_PerImage','results_2025_09_29_PerCell')
     close(h0)
 end
 
