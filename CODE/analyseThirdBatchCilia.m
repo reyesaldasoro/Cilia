@@ -5,9 +5,9 @@ close all
 
 
 %baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_08_22';
-baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_11'; % Exp002
+%baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_11'; % Exp002
 %baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_07_30';
-%baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_09_01';   % Exp006
+baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\Research\SGUL_Cilia\TIFFS_2025_09_01';   % Exp006
 %dir0        = dir(strcat(baseDir,filesep,'*NS*.tif'));
 dir0        = dir(strcat(baseDir,filesep,'*.tif'));
 
@@ -60,8 +60,8 @@ for k=1:numFiles
     h2.Position=[0.55 0.06 0.44 0.88];
     
     %filename = strcat('Results_Exp_006/Res_2025_09_19_',shortName{k},'.png');
-    %filename = strcat('Results_Exp_006/Res_2025_09_19_',shortName{k},'.png');
-    filename = strcat('Results_Exp_002/Res_2025_09_29_',shortName{k},'.png');
+    filename = strcat('Results_Exp_006/Res_2025_09_29_',shortName{k},'.png');
+    %filename = strcat('Results_Exp_002/Res_2025_09_29_',shortName{k},'.png');
     print('-dpng','-r100',filename)
 
     results_2025_09_29_PerImage{k,1}         = dir0(k).name;
