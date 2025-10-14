@@ -260,6 +260,7 @@ Output.FinalCombination_RGB(:,:,3)  = Output.FinalCombination  ==1 ;
 
 %imagesc(Output.FinalCombination_RGB)
 Output.FinalCombination_RGB2        = Output.FinalCombination_RGB+imdilate(nucleiRegions==0,ones(5));
+Output.NucleiRegions                = nucleiRegions;
 
 %%
 Output.TotalNuclei          = sum([Output.FinalNuclei_MIP_P.Area]>0);
