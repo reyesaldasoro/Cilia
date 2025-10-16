@@ -81,3 +81,14 @@ imagesc(repmat(Output.NucleiRegions==10,[1 1 3]).*sum(CiliaVolume(:,:,:,:),4)/25
 
 filename = 'Presentation_Korea_9.png';
 print('-dpng','-r100',filename)
+
+%%
+
+plot(BasalBody_MIP(205,:),'r')
+axis tight
+filename = 'Presentation_Korea_10.png';
+print('-dpng','-r100',filename)
+%%
+imagesc(BasalBody_MIP)
+filename = 'Presentation_Korea_11.png';
+print('-dpng','-r100',filename)
