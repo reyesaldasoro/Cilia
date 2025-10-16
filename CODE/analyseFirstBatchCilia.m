@@ -50,13 +50,15 @@ CalibrationFactor       = 4.8438;
 cp                      = cellpose(Model="nuclei");
 %%
 
-k=11;
+k=30;
    currFile                = strcat(baseDir,filesep,dir0(setsToRead(k)).name);
     %a                       = imfinfo(currFile);
     %dir0(k).numSlices       = numel(a);
     %currFile                    = strcat(baseDir,filesep,dir0(k).name);
     [CiliaVolume,magnification] = readCilia(currFile);
- Output                      = segmentCilia(CiliaVolume,cp,magnification);
+
+    imagesc(sum(CiliaVolume(:,:,3,:),4)/255)
+% Output                      = segmentCilia(CiliaVolume,cp,magnification);
 %%
 for k=73 %:numFiles
     tic
